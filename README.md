@@ -1,4 +1,3 @@
-[ghst_market_ascii.html](https://github.com/user-attachments/files/27906141/ghst_market_ascii.html)[ghst_market_ascii.html](https://github.com/user-attachments/files/27906125/ghst_market_ascii.html)<div align="center">
 
 ```
 ░██████╗░██╗  ██╗███████╗████████╗    ███╗   ███╗ █████╗ ██████╗ ██╗  ██╗███████╗████████╗
