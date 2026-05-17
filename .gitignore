@@ -24,4 +24,6 @@ yarn-error.log
 /.zed
 .cursor/
 .junie/
+AGENTS.md
+boost.json
 .DS_Store
