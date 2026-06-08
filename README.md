@@ -14,8 +14,8 @@
 
 [![Tests](https://github.com/achelminska/ghst-market/actions/workflows/tests.yml/badge.svg)](https://github.com/achelminska/ghst-market/actions/workflows/tests.yml)
 [![Linter](https://github.com/achelminska/ghst-market/actions/workflows/lint.yml/badge.svg)](https://github.com/achelminska/ghst-market/actions/workflows/lint.yml)
-[![PHP](https://img.shields.io/badge/PHP-8.5-777BB4?logo=php&logoColor=white)](https://php.net)
-[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.4+-777BB4?logo=php&logoColor=white)](https://php.net)
+[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 </div>
@@ -29,7 +29,7 @@ GHSTmarket is a marketplace platform for buying and downloading digital creative
 Creators can publish their work, set a price (or make it free), and earn virtual credits when others purchase it. Buyers browse, search, buy, and download — with all purchased assets available forever from their personal library.
 
 > **University project** — Advanced Web Services Programming, WSB-NLU, 2025/2026  
-> Built with Laravel 12 + Livewire + Flux UI + PostgreSQL
+> Built with Laravel 13 + Livewire + Flux UI + PostgreSQL
 
 ---
 
@@ -57,11 +57,11 @@ Creators can publish their work, set a price (or make it free), and earn virtual
 
 | Layer | Technology |
 |---|---|
-| Backend | Laravel 12 (PHP 8.3+) |
+| Backend | Laravel 13 (PHP 8.4+) |
 | Database | PostgreSQL |
 | Views | Blade Templates |
-| Reactivity | Livewire v3 |
-| UI Components | Flux UI |
+| Reactivity | Livewire v4 |
+| UI Components | Flux UI v2 |
 | Client interactions | Alpine.js |
 | Styling | Tailwind CSS |
 | Auth scaffold | Laravel Livewire Starter Kit |
@@ -107,7 +107,7 @@ purchases
 
 ### Prerequisites
 
-- PHP 8.3+
+- PHP 8.4+
 - Composer
 - Node.js 22+
 - PostgreSQL
