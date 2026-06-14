@@ -14,6 +14,7 @@ return new class extends Migration
             $table->foreignUuid('product_id')->constrained('products');
             $table->decimal('price_paid', 10, 2);
             $table->timestamp('purchased_at')->useCurrent();
+            $table->timestamps();
         });
     }
 

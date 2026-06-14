@@ -4,10 +4,16 @@ use Livewire\Component;
 use App\Models\Product;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use App\Exceptions\AlreadyPurchasedException;
+use App\Exceptions\InsufficientBalanceException;
+use App\Services\PurchaseService;
+use Livewire\Attributes\Computed;
+use Illuminate\Support\Facades\Auth;
 
 new #[Layout('layouts.app'), Title('Product')] class extends Component
 {
     public Product $product;
+    public string $errorMessage = '';
 
     public function mount(string $slug): void
     {
@@ -16,6 +22,32 @@ new #[Layout('layouts.app'), Title('Product')] class extends Component
             ->with(['category', 'tags', 'user'])
             ->firstOrFail();
     }
+
+    #[Computed]
+    public function alreadyPurchased(): bool
+    {
+        return Auth::check() && Auth::user()->purchases()
+            ->where('product_id', $this->product->id)
+            ->exists();
+    }
+
+    public function purchase(PurchaseService $service): void
+    {
+        if (! Auth::check()) {
+            $this->redirect(route('login'));
+            return;
+        }
+
+        try {
+            $service->purchase(Auth::user(), $this->product);
+            unset($this->alreadyPurchased);
+        } catch (AlreadyPurchasedException) {
+            $this->errorMessage = 'You already own this product.';
+        } catch (InsufficientBalanceException) {
+            $this->errorMessage = 'Insufficient balance.';
+        }
+    }
+
 };
 ?>
 
@@ -47,9 +79,19 @@ new #[Layout('layouts.app'), Title('Product')] class extends Component
                     </flux:heading>
                     <flux:text class="mb-4 text-sm">by {{ $this->product->user->name }}</flux:text>
 
-                    <flux:button variant="primary" class="w-full">
-                        {{ $this->product->price > 0 ? 'Buy now' : 'Download for free' }}
-                    </flux:button>
+                    @if ($this->alreadyPurchased)
+                        <flux:button variant="ghost" class="w-full" disabled>
+                            Already purchased
+                        </flux:button>
+                    @else
+                        <flux:button variant="primary" class="w-full" wire:click="purchase">
+                            {{ $this->product->price > 0 ? 'Buy now' : 'Get for free' }}
+                        </flux:button>
+                    @endif
+
+                    @if ($errorMessage)
+                        <flux:text class="mt-2 text-sm text-red-500">{{ $errorMessage }}</flux:text>
+                    @endif
                 </div>
             </div>
         </div>
