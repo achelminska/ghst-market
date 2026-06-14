@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
-#[Fillable(['user_id', 'product_id'])]
+#[Fillable(['user_id', 'product_id', 'price_paid'])]
 class Purchase extends Model
 {
     use HasUuids;
@@ -27,6 +26,7 @@ class Purchase extends Model
     {
         return [
             'purchased_at' => 'datetime',
+            'price_paid' => 'decimal:2',
         ];
     }
 
