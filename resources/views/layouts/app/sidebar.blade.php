@@ -15,6 +15,9 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="shopping-bag" :href="route('products.index')" :current="request()->routeIs('products.index')" wire:navigate>
+                        {{ __('Products') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
@@ -30,7 +33,7 @@
                 </flux:sidebar.item>
             </flux:sidebar.nav>
 
-            <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
+            <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()?->name" />
         </flux:sidebar>
 
         <!-- Mobile User Menu -->
@@ -39,6 +42,7 @@
 
             <flux:spacer />
 
+            @auth
             <flux:dropdown position="top" align="end">
                 <flux:profile
                     :initials="auth()->user()->initials()"
@@ -86,6 +90,9 @@
                     </form>
                 </flux:menu>
             </flux:dropdown>
+            @else
+            <flux:button :href="route('login')" variant="ghost" size="sm" wire:navigate>Log in</flux:button>
+            @endauth
         </flux:header>
 
         {{ $slot }}
