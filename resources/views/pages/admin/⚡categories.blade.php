@@ -5,9 +5,14 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 new #[Layout('layouts.admin')] class extends Component
 {
+    use WithPagination;
+
+    public string $search = '';
+
     #[Validate('required|string|max:60|unique:categories,name')]
     public string $newName = '';
 
@@ -60,10 +65,15 @@ new #[Layout('layouts.admin')] class extends Component
         $this->confirmingDelete = null;
     }
 
+    public function updatedSearch(): void { $this->resetPage(); }
+
     #[Computed]
     public function categories()
     {
-        return Category::withCount('products')->orderBy('name')->get();
+        return Category::withCount('products')
+            ->when($this->search, fn ($q) => $q->whereRaw('LOWER(name) LIKE ?', ['%'.strtolower($this->search).'%']))
+            ->orderBy('name')
+            ->paginate(15);
     }
 };
 ?>
@@ -71,7 +81,7 @@ new #[Layout('layouts.admin')] class extends Component
 <div>
     <div class="mb-6 flex items-center justify-between">
         <h1 class="text-xl font-bold text-white">Categories</h1>
-        <span class="text-sm text-zinc-500">{{ $this->categories->count() }} total</span>
+        <flux:input wire:model.live.debounce.300ms="search" placeholder="Search..." icon="magnifying-glass" clearable size="sm" class="w-56" />
     </div>
 
     {{-- Add new --}}
@@ -130,4 +140,5 @@ new #[Layout('layouts.admin')] class extends Component
             </tbody>
         </table>
     </div>
+    <div class="mt-4">{{ $this->categories->links() }}</div>
 </div>

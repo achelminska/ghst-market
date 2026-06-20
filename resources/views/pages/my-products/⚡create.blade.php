@@ -30,7 +30,7 @@ new #[Layout('layouts.app')] class extends Component
     #[Validate('required|array|min:1|max:5')]
     public array $selectedTags = [];
 
-    #[Validate('required|file|mimes:zip,png,jpg,jpeg,mp3,ttf,pdf|max:51200')]
+    #[Validate('required|file|max:102400')]
     public $file;
 
     #[Validate('nullable|image|mimes:png,jpg,jpeg,webp|max:5120')]
@@ -160,7 +160,7 @@ new #[Layout('layouts.app')] class extends Component
 
                 {{-- Digital file --}}
                 <div>
-                    <p class="mb-2 text-sm font-medium text-zinc-300">Digital file <span class="text-zinc-600">(zip, png, jpg, mp3, ttf, pdf — max 50 MB)</span></p>
+                    <p class="mb-2 text-sm font-medium text-zinc-300">Digital file <span class="text-zinc-600">(zip, epub, pdf, mp3, ttf, psd i inne — max 100 MB)</span></p>
                     <label class="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-zinc-700 px-6 py-8 transition hover:border-zinc-500">
                         <svg class="mb-2 size-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
                         @if ($file)
@@ -169,7 +169,7 @@ new #[Layout('layouts.app')] class extends Component
                         @else
                             <span class="text-sm text-zinc-500">Click to upload or drag and drop</span>
                         @endif
-                        <input type="file" wire:model="file" accept=".zip,.png,.jpg,.jpeg,.mp3,.ttf,.pdf" class="sr-only">
+                        <input type="file" wire:model="file" class="sr-only">
                     </label>
                     <div wire:loading wire:target="file" class="mt-2 text-xs text-zinc-500">Uploading...</div>
                     @error('file') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror

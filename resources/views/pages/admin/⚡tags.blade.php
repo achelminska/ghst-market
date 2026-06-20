@@ -4,9 +4,14 @@ use App\Models\Tag;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 new #[Layout('layouts.admin')] class extends Component
 {
+    use WithPagination;
+
+    public string $search = '';
+
     public string $newName = '';
 
     public ?string $editingId = null;
@@ -56,10 +61,15 @@ new #[Layout('layouts.admin')] class extends Component
         $this->confirmingDelete = null;
     }
 
+    public function updatedSearch(): void { $this->resetPage(); }
+
     #[Computed]
     public function tags()
     {
-        return Tag::withCount('products')->orderBy('name')->get();
+        return Tag::withCount('products')
+            ->when($this->search, fn ($q) => $q->whereRaw('LOWER(name) LIKE ?', ['%'.strtolower($this->search).'%']))
+            ->orderBy('name')
+            ->paginate(15);
     }
 };
 ?>
@@ -67,7 +77,7 @@ new #[Layout('layouts.admin')] class extends Component
 <div>
     <div class="mb-6 flex items-center justify-between">
         <h1 class="text-xl font-bold text-white">Tags</h1>
-        <span class="text-sm text-zinc-500">{{ $this->tags->count() }} total</span>
+        <flux:input wire:model.live.debounce.300ms="search" placeholder="Search..." icon="magnifying-glass" clearable size="sm" class="w-56" />
     </div>
 
     <form wire:submit="create" class="mb-6 flex gap-3">
@@ -125,4 +135,5 @@ new #[Layout('layouts.admin')] class extends Component
             </tbody>
         </table>
     </div>
+    <div class="mt-4">{{ $this->tags->links() }}</div>
 </div>

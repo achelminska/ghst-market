@@ -2,6 +2,7 @@
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Tag;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
@@ -24,10 +25,14 @@ new #[Layout('layouts.app')] class extends Component
     #[Url]
     public string $sort = 'newest';
 
+    #[Url]
+    public string $tag = '';
+
     public function updatedSearch(): void { $this->resetPage(); }
     public function updatedCategory(): void { $this->resetPage(); }
     public function updatedPrice(): void { $this->resetPage(); }
     public function updatedSort(): void { $this->resetPage(); }
+    public function updatedTag(): void { $this->resetPage(); }
 
     #[Computed]
     public function products()
@@ -38,6 +43,7 @@ new #[Layout('layouts.app')] class extends Component
             ->when($this->category, fn ($q) => $q->where('category_id', $this->category))
             ->when($this->price === 'free', fn ($q) => $q->where('price', 0))
             ->when($this->price === 'paid', fn ($q) => $q->where('price', '>', 0))
+            ->when($this->tag, fn ($q) => $q->whereHas('tags', fn ($q) => $q->where('slug', $this->tag)))
             ->with(['category'])
             ->when($this->sort === 'newest', fn ($q) => $q->latest())
             ->when($this->sort === 'price_asc', fn ($q) => $q->orderBy('price'))
@@ -49,6 +55,12 @@ new #[Layout('layouts.app')] class extends Component
     public function categories()
     {
         return Category::orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function activeTag()
+    {
+        return $this->tag ? Tag::where('slug', $this->tag)->first() : null;
     }
 };
 ?>
@@ -142,6 +154,16 @@ new #[Layout('layouts.app')] class extends Component
                         </flux:select>
                     </div>
                 </div>
+
+                @if ($this->activeTag)
+                    <div class="mb-3 flex items-center gap-2">
+                        <span class="text-xs text-zinc-500">Filtered by tag:</span>
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-zinc-800 px-2.5 py-1 text-xs text-zinc-300">
+                            #{{ $this->activeTag->name }}
+                            <button wire:click="$set('tag', '')" class="text-zinc-600 hover:text-white">✕</button>
+                        </span>
+                    </div>
+                @endif
 
                 <div class="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                     @forelse ($this->products as $product)

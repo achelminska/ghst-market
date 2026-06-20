@@ -24,6 +24,7 @@ class PurchaseService
         return DB::transaction(function () use ($user, $product) {
             if ($product->price > 0) {
                 $user->decrement('balance', $product->price);
+                $product->user->increment('balance', $product->price);
             }
 
             return $user->purchases()->create([

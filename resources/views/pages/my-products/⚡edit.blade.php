@@ -46,7 +46,7 @@ new #[Layout('layouts.app')] class extends Component
             'price'        => 'required|numeric|min:0',
             'category_id'  => 'required|exists:categories,id',
             'selectedTags' => 'required|array|min:1|max:5',
-            'file'         => 'nullable|file|mimes:zip,png,jpg,jpeg,mp3,ttf,pdf|max:51200',
+            'file'         => 'nullable|file|max:102400',
             'thumbnail'    => 'nullable|image|mimes:png,jpg,jpeg,webp|max:5120',
             'coverImage'   => 'nullable|image|mimes:png,jpg,jpeg,webp|max:5120',
         ]);
@@ -171,7 +171,7 @@ new #[Layout('layouts.app')] class extends Component
                 <div>
                     <p class="mb-2 text-sm font-medium text-zinc-300">
                         Digital file
-                        <span class="text-zinc-600">(leave empty to keep current)</span>
+                        <span class="text-zinc-600">(zip, epub, pdf, mp3, ttf, psd i inne — max 100 MB; leave empty to keep current)</span>
                     </p>
                     @if ($this->product->file_path && !$file)
                         <p class="mb-2 text-xs text-zinc-600">
@@ -186,7 +186,7 @@ new #[Layout('layouts.app')] class extends Component
                         @else
                             <span class="text-sm text-zinc-500">Click to replace file</span>
                         @endif
-                        <input type="file" wire:model="file" accept=".zip,.png,.jpg,.jpeg,.mp3,.ttf,.pdf" class="sr-only">
+                        <input type="file" wire:model="file" class="sr-only">
                     </label>
                     @error('file') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
                 </div>

@@ -9,6 +9,8 @@ Route::livewire('/products', 'pages::products.index')->name('products.index');
 
 Route::livewire('/products/{slug}', 'pages::products.show')->name('products.show');
 
+Route::livewire('/users/{username}', 'pages::users.show')->name('users.show');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
     Route::livewire('/my-purchases', 'pages::my-purchases')->name('my-purchases');

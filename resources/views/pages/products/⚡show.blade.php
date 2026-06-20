@@ -84,9 +84,14 @@ new #[Layout('layouts.guest'), Title('Product')] class extends Component
                         {{ $this->product->category->name }}
                     </span>
                     @foreach ($this->product->tags as $tag)
-                        <span wire:key="{{ $tag->id }}" class="rounded-full border border-zinc-700 px-3 py-1 text-xs text-zinc-500">
-                            {{ $tag->name }}
-                        </span>
+                        <a
+                            wire:key="{{ $tag->id }}"
+                            href="{{ route('products.index', ['tag' => $tag->slug]) }}"
+                            wire:navigate
+                            class="rounded-full border border-zinc-700 px-3 py-1 text-xs text-zinc-500 transition hover:border-zinc-500 hover:text-zinc-300"
+                        >
+                            #{{ $tag->name }}
+                        </a>
                     @endforeach
                 </div>
 
@@ -95,7 +100,7 @@ new #[Layout('layouts.guest'), Title('Product')] class extends Component
                 </h1>
 
                 <p class="mb-2 text-sm text-zinc-500">
-                    by <span class="text-zinc-300">{{ $this->product->user->name }}</span>
+                    by <a href="{{ route('users.show', $this->product->user->username) }}" wire:navigate class="text-zinc-300 hover:text-white transition-colors">{{ $this->product->user->name }}</a>
                 </p>
 
                 <div class="mt-8 border-t border-zinc-800 pt-8">

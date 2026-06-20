@@ -7,14 +7,18 @@ use App\Models\User;
 use App\Services\PurchaseService;
 
 test('PurchaseService can purchase a product', function () {
+    $seller = User::factory()->create(['balance' => 0]);
     $user = User::factory()->create(['balance' => 100]);
-    $product = Product::factory()->create(['price' => 20]);
+    $product = Product::factory()->create(['price' => 20, 'user_id' => $seller->id]);
+
     (new PurchaseService)->purchase($user, $product);
+
     $this->assertDatabaseHas('purchases', [
         'user_id' => $user->id,
         'product_id' => $product->id,
     ]);
     expect($user->fresh()->balance)->toEqual('80.00');
+    expect($seller->fresh()->balance)->toEqual('20.00');
 });
 
 test('User cannot purchase the same product twice', function () {
