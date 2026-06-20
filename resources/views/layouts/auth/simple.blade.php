@@ -19,6 +19,10 @@
                 {{ $slot }}
             </div>
 
+            <a href="{{ route('products.index') }}" wire:navigate class="mt-6 text-sm text-zinc-600 transition-colors hover:text-zinc-400">
+                ← Browse without an account
+            </a>
+
         </div>
 
         @persist('toast')
