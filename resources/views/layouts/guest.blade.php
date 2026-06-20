@@ -1,13 +1,28 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
-        @include('partials.head')
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ filled($title ?? null) ? $title.' - '.config('app.name') : config('app.name') }}</title>
+        <link rel="icon" href="/favicon.ico" sizes="any">
+        @fonts
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
         <header class="sticky top-0 z-50 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-sm">
             <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-                <a href="{{ route('home') }}" wire:navigate class="text-lg font-semibold tracking-tight text-white">
-                    {{ config('app.name') }}
+                <a href="{{ route('home') }}" wire:navigate class="flex items-center">
+                    @if (file_exists(public_path('images/logo.svg')) || file_exists(public_path('images/logo.png')))
+                        <img
+                            src="{{ asset(file_exists(public_path('images/logo.svg')) ? 'images/logo.svg' : 'images/logo.png') }}"
+                            alt="{{ config('app.name') }}"
+                            class="h-10 w-auto mix-blend-screen"
+                        >
+                    @else
+                        <span class="text-lg font-semibold tracking-tight text-white">
+                            {{ config('app.name') }}
+                        </span>
+                    @endif
                 </a>
 
                 <nav class="flex items-center gap-6">
