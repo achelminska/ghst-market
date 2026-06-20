@@ -1,38 +1,48 @@
 <?php
 
-use Livewire\Component;
-use Livewire\WithPagination;
 use App\Models\Category;
 use App\Models\Product;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 new #[Layout('layouts.app')] class extends Component
 {
     use WithPagination;
 
+    #[Url]
     public string $search = '';
+
+    #[Url]
     public string $category = '';
 
-    public function updatedSearch(): void
-    {
-        $this->resetPage();
-    }
+    #[Url]
+    public string $price = '';
 
-    public function updatedCategory(): void
-    {
-        $this->resetPage();
-    }
+    #[Url]
+    public string $sort = 'newest';
+
+    public function updatedSearch(): void { $this->resetPage(); }
+    public function updatedCategory(): void { $this->resetPage(); }
+    public function updatedPrice(): void { $this->resetPage(); }
+    public function updatedSort(): void { $this->resetPage(); }
 
     #[Computed]
     public function products()
     {
         return Product::query()
             ->where('is_active', true)
-            ->when($this->search, fn($q) => $q->whereRaw('LOWER(title) LIKE ?', ['%'.strtolower($this->search).'%']))
-            ->when($this->category, fn($q) => $q->where('category_id', $this->category))
-            ->with(['category', 'tags'])
-            ->paginate(12);
+            ->when($this->search, fn ($q) => $q->whereRaw('LOWER(title) LIKE ?', ['%'.strtolower($this->search).'%']))
+            ->when($this->category, fn ($q) => $q->where('category_id', $this->category))
+            ->when($this->price === 'free', fn ($q) => $q->where('price', 0))
+            ->when($this->price === 'paid', fn ($q) => $q->where('price', '>', 0))
+            ->with(['category'])
+            ->when($this->sort === 'newest', fn ($q) => $q->latest())
+            ->when($this->sort === 'price_asc', fn ($q) => $q->orderBy('price'))
+            ->when($this->sort === 'price_desc', fn ($q) => $q->orderByDesc('price'))
+            ->paginate(24);
     }
 
     #[Computed]
@@ -40,69 +50,141 @@ new #[Layout('layouts.app')] class extends Component
     {
         return Category::orderBy('name')->get();
     }
-
 };
 ?>
 
 <div>
-    <flux:main>
-        <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <flux:heading size="xl">Products</flux:heading>
+    <flux:main class="!p-0">
+        <div class="flex min-h-screen">
+            {{-- Filter sidebar --}}
+            <aside class="hidden w-52 shrink-0 border-e border-zinc-800 px-4 py-6 lg:block xl:w-60">
+                <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-zinc-500">Filter results</p>
 
-            <div class="flex gap-3">
-                <flux:input
-                    wire:model.live.debounce.300ms="search"
-                    placeholder="Search products..."
-                    icon="magnifying-glass"
-                    clearable
-                />
+                {{-- Search --}}
+                <div class="mb-6">
+                    <flux:input
+                        wire:model.live.debounce.300ms="search"
+                        placeholder="Search..."
+                        size="sm"
+                        icon="magnifying-glass"
+                        clearable
+                    />
+                </div>
 
-                <flux:select wire:model.live="category" placeholder="All categories">
-                    <flux:select.option value="">All categories</flux:select.option>
-                    @foreach ($this->categories as $cat)
-                        <flux:select.option wire:key="{{ $cat->id }}" value="{{ $cat->id }}">
-                            {{ $cat->name }}
-                        </flux:select.option>
-                    @endforeach
-                </flux:select>
-            </div>
-        </div>
+                {{-- Price --}}
+                <div class="mb-6">
+                    <p class="mb-2 text-xs font-medium text-zinc-400">Price</p>
+                    <ul class="space-y-1">
+                        <li>
+                            <button wire:click="$set('price', '')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $price === '' ? 'text-white' : 'text-zinc-400' }}">
+                                All
+                            </button>
+                        </li>
+                        <li>
+                            <button wire:click="$set('price', 'free')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $price === 'free' ? 'text-white' : 'text-zinc-400' }}">
+                                Free
+                            </button>
+                        </li>
+                        <li>
+                            <button wire:click="$set('price', 'paid')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $price === 'paid' ? 'text-white' : 'text-zinc-400' }}">
+                                Paid
+                            </button>
+                        </li>
+                    </ul>
+                </div>
 
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            @forelse ($this->products as $product)
-                <div wire:key="{{ $product->id }}" class="flex flex-col rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
-                    <div class="aspect-video w-full overflow-hidden rounded-t-xl bg-zinc-100 dark:bg-zinc-800">
-                        @if ($product->thumbnail)
-                            <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}" class="h-full w-full object-cover">
-                        @else
-                            <div class="flex h-full items-center justify-center">
-                                <svg class="size-10 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 16.5V19a.75.75 0 00.75.75h16.5A.75.75 0 0021 19v-2.5M3 16.5V7.5A.75.75 0 013.75 6.75h16.5A.75.75 0 0121 7.5v9" />
-                                </svg>
+                {{-- Categories --}}
+                <div class="mb-6">
+                    <p class="mb-2 text-xs font-medium text-zinc-400">Category</p>
+                    <ul class="space-y-1">
+                        <li>
+                            <button wire:click="$set('category', '')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $category === '' ? 'text-white' : 'text-zinc-400' }}">
+                                All categories
+                            </button>
+                        </li>
+                        @foreach ($this->categories as $cat)
+                            <li>
+                                <button wire:key="{{ $cat->id }}" wire:click="$set('category', '{{ $cat->id }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $category === $cat->id ? 'text-white' : 'text-zinc-400' }}">
+                                    {{ $cat->name }}
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+
+                {{-- Sort --}}
+                <div>
+                    <p class="mb-2 text-xs font-medium text-zinc-400">Sort by</p>
+                    <ul class="space-y-1">
+                        @foreach (['newest' => 'Most recent', 'price_asc' => 'Price: low to high', 'price_desc' => 'Price: high to low'] as $value => $label)
+                            <li>
+                                <button wire:click="$set('sort', '{{ $value }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $sort === $value ? 'text-white' : 'text-zinc-400' }}">
+                                    {{ $label }}
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </aside>
+
+            {{-- Product grid --}}
+            <div class="flex-1 px-6 py-6">
+                <div class="mb-4 flex items-center justify-between">
+                    <p class="text-sm text-zinc-500">{{ $this->products->total() }} results</p>
+
+                    {{-- Mobile filters --}}
+                    <div class="flex gap-2 lg:hidden">
+                        <flux:select wire:model.live="category" size="sm" placeholder="Category">
+                            <flux:select.option value="">All categories</flux:select.option>
+                            @foreach ($this->categories as $cat)
+                                <flux:select.option wire:key="{{ $cat->id }}" value="{{ $cat->id }}">{{ $cat->name }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                    @forelse ($this->products as $product)
+                        <a
+                            wire:key="{{ $product->id }}"
+                            href="{{ route('products.show', $product->slug) }}"
+                            wire:navigate
+                            class="group block rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-zinc-700 hover:bg-zinc-800/60"
+                        >
+                            <div class="aspect-square w-full overflow-hidden rounded-t-xl bg-zinc-800">
+                                @if ($product->thumbnail)
+                                    <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}" class="h-full w-full object-cover transition group-hover:scale-105">
+                                @else
+                                    <div class="flex h-full items-center justify-center">
+                                        <svg class="size-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 16.5V19a.75.75 0 00.75.75h16.5A.75.75 0 0021 19v-2.5M3 16.5V7.5A.75.75 0 013.75 6.75h16.5A.75.75 0 0121 7.5v9" />
+                                        </svg>
+                                    </div>
+                                @endif
                             </div>
-                        @endif
-                    </div>
-                    <div class="flex flex-1 flex-col p-4">
-                        <flux:badge color="zinc" size="sm" class="mb-2 self-start">{{ $product->category->name }}</flux:badge>
-                        <flux:heading size="sm" class="mb-1">{{ $product->title }}</flux:heading>
-                        <flux:text class="line-clamp-2 flex-1 text-sm">{{ $product->description }}</flux:text>
-                    </div>
-                    <div class="flex items-center justify-between border-t border-zinc-100 px-4 py-3 dark:border-zinc-800">
-                        <flux:heading size="sm">
-                            {{ $product->price > 0 ? '$'.number_format($product->price, 2) : 'Free' }}
-                        </flux:heading>
-                        <flux:button size="sm" variant="primary" :href="route('products.show', $product->slug)" wire:navigate>View</flux:button>
-                    </div>
+                            <div class="p-3">
+                                <p class="truncate text-sm font-medium text-zinc-200 group-hover:text-white">{{ $product->title }}</p>
+                                <div class="mt-1 flex items-center justify-between">
+                                    <span class="text-sm font-semibold text-white">
+                                        {{ $product->price > 0 ? '$'.number_format($product->price, 2) : 'Free' }}
+                                    </span>
+                                    @if ($product->category)
+                                        <span class="truncate text-xs text-zinc-600">{{ $product->category->name }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="col-span-full py-20 text-center">
+                            <p class="text-zinc-500">No products found.</p>
+                        </div>
+                    @endforelse
                 </div>
-            @empty
-                <div class="col-span-full py-16 text-center">
-                    <flux:text>No products found.</flux:text>
-                </div>
-            @endforelse
-        </div>
 
-        <div class="mt-8">
-            {{ $this->products->links() }}
+                <div class="mt-8">
+                    {{ $this->products->links() }}
+                </div>
+            </div>
         </div>
     </flux:main>
 </div>
