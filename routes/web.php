@@ -3,7 +3,7 @@
 use App\Http\Controllers\DownloadController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+Route::livewire('/', 'pages::home')->name('home');
 
 Route::livewire('/products', 'pages::products.index')->name('products.index');
 
