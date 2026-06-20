@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
-#[Fillable(['title', 'description', 'price', 'file_path', 'thumbnail', 'category_id', 'user_id'])]
+#[Fillable(['title', 'description', 'price', 'file_path', 'thumbnail', 'cover_image', 'category_id', 'user_id'])]
 class Product extends Model
 {
     use HasFactory, HasUuids;

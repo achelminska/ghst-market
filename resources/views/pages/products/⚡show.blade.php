@@ -59,6 +59,17 @@ new #[Layout('layouts.app'), Title('Product')] class extends Component
             </flux:button>
         </div>
 
+        {{-- Cover image --}}
+        @if ($this->product->cover_image)
+            <div class="mb-8 overflow-hidden rounded-2xl">
+                <img
+                    src="{{ $this->product->cover_image }}"
+                    alt="{{ $this->product->title }}"
+                    class="h-72 w-full object-cover lg:h-96"
+                >
+            </div>
+        @endif
+
         <div class="grid gap-8 lg:grid-cols-3">
             <div class="lg:col-span-2">
                 <div class="mb-2 flex flex-wrap gap-2">
