@@ -109,12 +109,10 @@ new #[Layout('layouts.app')] class extends Component
                             @endforeach
                         </div>
 
-                        <button
-                            type="submit"
-                            class="w-full rounded-xl bg-white py-2.5 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-100"
-                        >
-                            Add funds
-                        </button>
+                        <flux:button type="submit" variant="primary" class="w-full" wire:loading.attr="disabled" wire:target="topUp">
+                            <span wire:loading.remove wire:target="topUp">Add funds</span>
+                            <span wire:loading wire:target="topUp">Adding...</span>
+                        </flux:button>
                     </form>
                 </div>
             </div>
