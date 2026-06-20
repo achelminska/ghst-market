@@ -11,40 +11,20 @@
             </a>
 
             <flux:navbar class="-mb-px hidden lg:flex">
-                <flux:navbar.item
-                    :href="route('products.index')"
-                    :current="request()->routeIs('products.*')"
-                    wire:navigate
-                >
+                <flux:navbar.item :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>
                     Browse
                 </flux:navbar.item>
-                <flux:navbar.item
-                    :href="route('dashboard')"
-                    :current="request()->routeIs('dashboard')"
-                    wire:navigate
-                >
+                <flux:navbar.item :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     Dashboard
                 </flux:navbar.item>
-                <flux:navbar.item
-                    :href="route('my-purchases')"
-                    :current="request()->routeIs('my-purchases')"
-                    wire:navigate
-                >
+                <flux:navbar.item :href="route('my-purchases')" :current="request()->routeIs('my-purchases')" wire:navigate>
                     My purchases
                 </flux:navbar.item>
-                <flux:navbar.item
-                    :href="route('my-products.index')"
-                    :current="request()->routeIs('my-products.*')"
-                    wire:navigate
-                >
+                <flux:navbar.item :href="route('my-products.index')" :current="request()->routeIs('my-products.*')" wire:navigate>
                     My products
                 </flux:navbar.item>
                 @if (auth()->user()?->is_admin)
-                    <flux:navbar.item
-                        :href="route('admin.categories')"
-                        :current="request()->routeIs('admin.*')"
-                        wire:navigate
-                    >
+                    <flux:navbar.item :href="route('admin.categories')" :current="request()->routeIs('admin.*')" wire:navigate>
                         Admin
                     </flux:navbar.item>
                 @endif
@@ -52,11 +32,7 @@
 
             <flux:spacer />
 
-            <a
-                href="{{ route('wallet') }}"
-                wire:navigate
-                class="me-4 hidden text-sm text-zinc-400 transition-colors hover:text-white lg:block"
-            >
+            <a href="{{ route('wallet') }}" wire:navigate class="me-4 hidden text-sm text-zinc-400 transition-colors hover:text-white lg:block">
                 ${{ number_format(auth()->user()?->balance ?? 0, 2) }}
             </a>
 
@@ -99,29 +75,7 @@
                     </form>
                 </flux:menu>
             </flux:dropdown>
-
-            {{-- Mobile menu toggle --}}
-            <flux:sidebar.toggle class="ms-3 lg:hidden" icon="bars-2" />
         </flux:header>
-
-        {{-- Mobile sidebar --}}
-        <flux:sidebar stashable class="border-e border-zinc-800 bg-zinc-900">
-            <flux:sidebar.header class="border-b border-zinc-800">
-                <span class="text-sm font-semibold text-white">{{ config('app.name') }}</span>
-                <flux:sidebar.collapse />
-            </flux:sidebar.header>
-
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="shopping-bag" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>Browse</flux:sidebar.item>
-                <flux:sidebar.item icon="squares-2x2" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Dashboard</flux:sidebar.item>
-                <flux:sidebar.item icon="archive-box" :href="route('my-purchases')" :current="request()->routeIs('my-purchases')" wire:navigate>My purchases</flux:sidebar.item>
-                <flux:sidebar.item icon="cube" :href="route('my-products.index')" :current="request()->routeIs('my-products.*')" wire:navigate>My products</flux:sidebar.item>
-                <flux:sidebar.item icon="banknotes" :href="route('wallet')" :current="request()->routeIs('wallet')" wire:navigate>Wallet</flux:sidebar.item>
-                @if (auth()->user()?->is_admin)
-                    <flux:sidebar.item icon="tag" :href="route('admin.categories')" :current="request()->routeIs('admin.*')" wire:navigate>Admin</flux:sidebar.item>
-                @endif
-            </flux:sidebar.nav>
-        </flux:sidebar>
 
         {{ $slot }}
 
