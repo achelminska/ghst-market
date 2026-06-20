@@ -24,4 +24,17 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::livewire('/tags', 'pages::admin.tags')->name('admin.tags');
 });
 
+// Admin panel (separate login + protected by admin middleware)
+Route::prefix('admin')->group(function () {
+    Route::livewire('/login', 'pages::admin.login')->name('admin.login');
+
+    Route::middleware(['admin'])->group(function () {
+        Route::livewire('/dashboard', 'pages::admin.dashboard')->name('admin.dashboard');
+        Route::livewire('/users', 'pages::admin.users')->name('admin.users');
+        Route::livewire('/products', 'pages::admin.products')->name('admin.products');
+        Route::livewire('/categories', 'pages::admin.categories')->name('admin.categories');
+        Route::livewire('/tags', 'pages::admin.tags')->name('admin.tags');
+    });
+});
+
 require __DIR__.'/settings.php';
