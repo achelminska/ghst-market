@@ -71,6 +71,17 @@ new #[Layout('layouts.app')] class extends Component
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             @forelse ($this->products as $product)
                 <div wire:key="{{ $product->id }}" class="flex flex-col rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+                    <div class="aspect-video w-full overflow-hidden rounded-t-xl bg-zinc-100 dark:bg-zinc-800">
+                        @if ($product->thumbnail)
+                            <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}" class="h-full w-full object-cover">
+                        @else
+                            <div class="flex h-full items-center justify-center">
+                                <svg class="size-10 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 16.5V19a.75.75 0 00.75.75h16.5A.75.75 0 0021 19v-2.5M3 16.5V7.5A.75.75 0 013.75 6.75h16.5A.75.75 0 0121 7.5v9" />
+                                </svg>
+                            </div>
+                        @endif
+                    </div>
                     <div class="flex flex-1 flex-col p-4">
                         <flux:badge color="zinc" size="sm" class="mb-2 self-start">{{ $product->category->name }}</flux:badge>
                         <flux:heading size="sm" class="mb-1">{{ $product->title }}</flux:heading>

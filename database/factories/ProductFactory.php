@@ -22,6 +22,7 @@ class ProductFactory extends Factory
             'description' => fake()->paragraphs(2, true),
             'price' => fake()->randomFloat(2, 0, 99),
             'file_path' => 'products/'.fake()->uuid().'.zip',
+            'thumbnail' => 'https://picsum.photos/seed/'.fake()->word().'/400/400',
             'is_active' => true,
             'category_id' => Category::factory(),
             'user_id' => User::factory(),
