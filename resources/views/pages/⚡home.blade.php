@@ -69,7 +69,7 @@ new #[Layout('layouts.guest')] class extends Component
                         wire:navigate
                         class="group block rounded-2xl border border-zinc-800 bg-zinc-900 p-4 transition hover:border-zinc-700 hover:bg-zinc-800/60"
                     >
-                        <div class="mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-zinc-800">
+                        <div class="mb-4 flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-xl bg-zinc-800">
                             @if ($product->thumbnail)
                                 <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}" class="h-full w-full object-cover">
                             @else

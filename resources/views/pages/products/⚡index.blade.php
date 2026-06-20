@@ -151,7 +151,7 @@ new #[Layout('layouts.app')] class extends Component
                             wire:navigate
                             class="group block rounded-lg border border-zinc-800 bg-zinc-900 transition hover:border-zinc-700 hover:bg-zinc-800/60"
                         >
-                            <div class="aspect-square w-full overflow-hidden rounded-t-lg bg-zinc-800">
+                            <div class="aspect-[4/3] w-full overflow-hidden rounded-t-lg bg-zinc-800">
                                 @if ($product->thumbnail)
                                     <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}" class="h-full w-full object-cover transition group-hover:scale-105">
                                 @else
