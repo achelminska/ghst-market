@@ -143,29 +143,29 @@ new #[Layout('layouts.app')] class extends Component
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                <div class="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                     @forelse ($this->products as $product)
                         <a
                             wire:key="{{ $product->id }}"
                             href="{{ route('products.show', $product->slug) }}"
                             wire:navigate
-                            class="group block rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-zinc-700 hover:bg-zinc-800/60"
+                            class="group block rounded-lg border border-zinc-800 bg-zinc-900 transition hover:border-zinc-700 hover:bg-zinc-800/60"
                         >
-                            <div class="aspect-square w-full overflow-hidden rounded-t-xl bg-zinc-800">
+                            <div class="aspect-square w-full overflow-hidden rounded-t-lg bg-zinc-800">
                                 @if ($product->thumbnail)
                                     <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}" class="h-full w-full object-cover transition group-hover:scale-105">
                                 @else
                                     <div class="flex h-full items-center justify-center">
-                                        <svg class="size-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                        <svg class="size-6 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 16.5V19a.75.75 0 00.75.75h16.5A.75.75 0 0021 19v-2.5M3 16.5V7.5A.75.75 0 013.75 6.75h16.5A.75.75 0 0121 7.5v9" />
                                         </svg>
                                     </div>
                                 @endif
                             </div>
-                            <div class="p-3">
-                                <p class="truncate text-sm font-medium text-zinc-200 group-hover:text-white">{{ $product->title }}</p>
-                                <div class="mt-1 flex items-center justify-between">
-                                    <span class="text-sm font-semibold text-white">
+                            <div class="p-2">
+                                <p class="truncate text-xs font-medium text-zinc-300 group-hover:text-white">{{ $product->title }}</p>
+                                <div class="mt-0.5 flex items-center justify-between">
+                                    <span class="text-xs font-semibold text-white">
                                         {{ $product->price > 0 ? '$'.number_format($product->price, 2) : 'Free' }}
                                     </span>
                                     @if ($product->category)
