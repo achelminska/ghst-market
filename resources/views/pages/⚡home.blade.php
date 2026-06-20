@@ -24,11 +24,11 @@ new #[Layout('layouts.guest')] class extends Component
     <section class="mx-auto max-w-7xl px-6 py-28 text-center">
         <h1 class="text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
             Digital assets<br>
-            <span class="text-zinc-500">for creators.</span>
+            <span class="text-zinc-500">for everyone.</span>
         </h1>
 
         <p class="mx-auto mt-6 max-w-lg text-lg text-zinc-500">
-            Discover and sell fonts, templates, illustrations, UI kits and more — in one minimalist marketplace.
+            Browse and download fonts, templates, illustrations, music and indie game files — or sell your own work.
         </p>
 
         <div class="mt-10 flex items-center justify-center gap-4">
