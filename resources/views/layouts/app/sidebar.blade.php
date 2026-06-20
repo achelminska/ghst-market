@@ -56,13 +56,10 @@
 
                         <flux:menu.separator />
 
-                        <flux:menu.item :href="route('wallet')" icon="banknotes" wire:navigate>
-                            Wallet — ${{ number_format(auth()->user()?->balance ?? 0, 2) }}
-                        </flux:menu.item>
-                        <flux:menu.item :href="route('my-products.index')" icon="cube" wire:navigate>
-                            My products
-                        </flux:menu.item>
-                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
+                    <flux:menu.item :href="route('wallet')" icon="banknotes" wire:navigate>
+                        Wallet — ${{ number_format(auth()->user()?->balance ?? 0, 2) }}
+                    </flux:menu.item>
+                    <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
                             Settings
                         </flux:menu.item>
 
