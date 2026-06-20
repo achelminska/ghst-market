@@ -1,16 +1,21 @@
 <?php
 
+use App\Models\Product;
 use App\Models\User;
+use App\Services\PurchaseService;
 
-test('guests are redirected to the login page', function () {
-    $response = $this->get(route('dashboard'));
-    $response->assertRedirect(route('login'));
+test('Dashboard page displays purchases', function () {
+    $user = User::factory()->create(['balance' => 100]);
+    $product = Product::factory()->create(['price' => 20]);
+    (new PurchaseService)->purchase($user, $product);
+
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertSee($product->title);
 });
 
-test('authenticated users can visit the dashboard', function () {
-    $user = User::factory()->create();
-    $this->actingAs($user);
-
-    $response = $this->get(route('dashboard'));
-    $response->assertOk();
+test('Guest is redirected to login when visiting dashboard', function () {
+    $this->get(route('dashboard'))
+        ->assertRedirect(route('login'));
 });
