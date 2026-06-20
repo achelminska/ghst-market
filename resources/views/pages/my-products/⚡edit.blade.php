@@ -35,7 +35,7 @@ new #[Layout('layouts.app')] class extends Component
         $this->description = $this->product->description;
         $this->price = $this->product->price;
         $this->category_id = $this->product->category_id;
-        $this->selectedTags = $this->product->tags()->pluck('id')->map(fn ($id) => (string) $id)->toArray();
+        $this->selectedTags = $this->product->tags()->pluck('id')->map(fn ($id) => (string) $id)->all();
     }
 
     public function save(): void
@@ -158,7 +158,7 @@ new #[Layout('layouts.app')] class extends Component
                     <div class="flex flex-wrap gap-2">
                         @foreach ($this->tags as $tag)
                             <label wire:key="{{ $tag->id }}" class="cursor-pointer">
-                                <input type="checkbox" wire:model="selectedTags" value="{{ $tag->id }}" class="sr-only peer">
+                                <input type="checkbox" wire:model="selectedTags" value="{{ $tag->id }}" @checked(in_array((string) $tag->id, $selectedTags)) class="sr-only peer">
                                 <span class="inline-block rounded-full border border-zinc-700 px-3 py-1 text-xs text-zinc-400 transition peer-checked:border-white peer-checked:bg-white peer-checked:text-zinc-900 hover:border-zinc-500">
                                     {{ $tag->name }}
                                 </span>
