@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Recreate sessions table with string user_id to support UUID primary keys
         Schema::dropIfExists('sessions');
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
@@ -22,9 +23,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('sessions');
