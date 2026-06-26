@@ -212,7 +212,7 @@ new #[Layout('layouts.app')] class extends Component
                 </div>
 
                 <div>
-                    <p class="mb-2 text-sm font-medium text-zinc-300">Cover image</p>
+                    <p class="mb-2 text-sm font-medium text-zinc-300">Page background <span class="text-zinc-600">(tileable image, repeats behind product page)</span></p>
                     <label class="block cursor-pointer overflow-hidden rounded-xl border border-dashed border-zinc-700 transition hover:border-zinc-500">
                         @if ($coverImage)
                             <img src="{{ $coverImage->temporaryUrl() }}" class="aspect-video w-full object-cover">

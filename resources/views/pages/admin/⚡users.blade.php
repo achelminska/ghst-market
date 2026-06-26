@@ -63,8 +63,19 @@ new #[Layout('layouts.admin')] class extends Component
                 @forelse ($this->users as $user)
                     <tr wire:key="{{ $user->id }}">
                         <td class="px-4 py-3">
-                            <p class="font-medium text-zinc-200">{{ $user->name }}</p>
-                            <p class="text-xs text-zinc-600">{{ $user->email }}</p>
+                            <div class="flex items-center gap-3">
+                                <div class="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-zinc-700">
+                                    @if ($user->avatarUrl())
+                                        <img src="{{ $user->avatarUrl() }}" alt="" class="block h-8 w-8 object-cover">
+                                    @else
+                                        <div class="flex h-8 w-8 items-center justify-center text-xs font-medium text-white">{{ $user->initials() }}</div>
+                                    @endif
+                                </div>
+                                <div>
+                                    <p class="font-medium text-zinc-200">{{ $user->name }}</p>
+                                    <p class="text-xs text-zinc-600">{{ $user->email }}</p>
+                                </div>
+                            </div>
                         </td>
                         <td class="px-4 py-3 text-right text-zinc-400">${{ number_format($user->balance, 2) }}</td>
                         <td class="px-4 py-3 text-right text-zinc-400">{{ $user->products_count }}</td>

@@ -6,6 +6,8 @@
     <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
 
         <flux:header class="border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-sm" sticky>
+            <flux:sidebar.toggle class="me-2 lg:hidden" icon="bars-2" inset="left" />
+
             <a href="{{ route('home') }}" wire:navigate class="me-6 shrink-0 text-base font-semibold tracking-tight text-white">
                 {{ config('app.name') }}
             </a>
@@ -24,7 +26,7 @@
                     My products
                 </flux:navbar.item>
                 @if (auth()->user()?->is_admin)
-                    <flux:navbar.item :href="route('admin.categories')" :current="request()->routeIs('admin.*')" wire:navigate>
+                    <flux:navbar.item :href="route('admin.dashboard')" :current="request()->routeIs('admin.*')" wire:navigate>
                         Admin
                     </flux:navbar.item>
                 @endif
@@ -41,13 +43,15 @@
                     <flux:profile
                         :name="auth()->user()?->name"
                         :initials="auth()->user()?->initials()"
+                        :avatar="auth()->user()?->avatarUrl()"
+                        circle
                         icon-trailing="chevron-down"
-                        class="cursor-pointer"
+                        class="cursor-pointer max-lg:[&>span]:hidden"
                     />
 
                     <flux:menu>
                         <div class="flex items-center gap-3 px-3 py-2">
-                            <flux:avatar :name="auth()->user()?->name" :initials="auth()->user()?->initials()" />
+                            <flux:avatar :name="auth()->user()?->name" :initials="auth()->user()?->initials()" :src="auth()->user()?->avatarUrl()" circle />
                             <div>
                                 <p class="text-sm font-medium text-white">{{ auth()->user()?->name }}</p>
                                 <p class="text-xs text-zinc-500">{{ auth()->user()?->email }}</p>
@@ -84,6 +88,47 @@
                 </div>
             @endauth
         </flux:header>
+
+        <flux:sidebar collapsible="mobile" sticky class="border-e border-zinc-800 bg-zinc-950 lg:hidden">
+            <flux:sidebar.header>
+                <a href="{{ route('home') }}" wire:navigate class="text-base font-semibold tracking-tight text-white">
+                    {{ config('app.name') }}
+                </a>
+                <flux:sidebar.collapse class="lg:hidden" />
+            </flux:sidebar.header>
+
+            <flux:sidebar.nav>
+                <flux:sidebar.item icon="magnifying-glass" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>
+                    Browse
+                </flux:sidebar.item>
+                @auth
+                    <flux:sidebar.item icon="squares-2x2" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        Dashboard
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="shopping-bag" :href="route('my-purchases')" :current="request()->routeIs('my-purchases')" wire:navigate>
+                        My purchases
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="cube" :href="route('my-products.index')" :current="request()->routeIs('my-products.*')" wire:navigate>
+                        My products
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="banknotes" :href="route('wallet')" :current="request()->routeIs('wallet')" wire:navigate>
+                        Wallet — ${{ number_format(auth()->user()?->balance ?? 0, 2) }}
+                    </flux:sidebar.item>
+                    @if (auth()->user()?->is_admin)
+                        <flux:sidebar.item icon="shield-check" :href="route('admin.dashboard')" :current="request()->routeIs('admin.*')" wire:navigate>
+                            Admin
+                        </flux:sidebar.item>
+                    @endif
+                @else
+                    <flux:sidebar.item icon="arrow-right-end-on-rectangle" :href="route('login')" wire:navigate>
+                        Log in
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="user-plus" :href="route('register')" wire:navigate>
+                        Sign up
+                    </flux:sidebar.item>
+                @endauth
+            </flux:sidebar.nav>
+        </flux:sidebar>
 
         {{ $slot }}
 

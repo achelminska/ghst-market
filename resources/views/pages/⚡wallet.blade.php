@@ -52,7 +52,7 @@ new #[Layout('layouts.app')] class extends Component
                 'type'        => 'in',
             ]);
 
-        return $purchases->merge($sales)->sortByDesc('date')->values();
+        return collect($purchases)->merge($sales)->sortByDesc('date')->values();
     }
 };
 ?>

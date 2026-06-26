@@ -17,6 +17,7 @@ test('profile information can be updated', function () {
     $response = Livewire::test('pages::settings.profile')
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
+        ->set('username', 'test_user')
         ->call('updateProfileInformation');
 
     $response->assertHasNoErrors();
@@ -25,6 +26,7 @@ test('profile information can be updated', function () {
 
     expect($user->name)->toEqual('Test User');
     expect($user->email)->toEqual('test@example.com');
+    expect($user->username)->toEqual('test_user');
     expect($user->email_verified_at)->toBeNull();
 });
 
@@ -36,11 +38,55 @@ test('email verification status is unchanged when email address is unchanged', f
     $response = Livewire::test('pages::settings.profile')
         ->set('name', 'Test User')
         ->set('email', $user->email)
+        ->set('username', $user->username)
         ->call('updateProfileInformation');
 
     $response->assertHasNoErrors();
 
     expect($user->refresh()->email_verified_at)->not->toBeNull();
+});
+
+test('username must be unique', function () {
+    $existing = User::factory()->create(['username' => 'takenname']);
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $response = Livewire::test('pages::settings.profile')
+        ->set('name', $user->name)
+        ->set('email', $user->email)
+        ->set('username', 'takenname')
+        ->call('updateProfileInformation');
+
+    $response->assertHasErrors(['username']);
+});
+
+test('username can only contain letters, numbers and underscores', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $response = Livewire::test('pages::settings.profile')
+        ->set('name', $user->name)
+        ->set('email', $user->email)
+        ->set('username', 'invalid username!')
+        ->call('updateProfileInformation');
+
+    $response->assertHasErrors(['username']);
+});
+
+test('user can update their own username without uniqueness conflict', function () {
+    $user = User::factory()->create(['username' => 'myusername']);
+
+    $this->actingAs($user);
+
+    $response = Livewire::test('pages::settings.profile')
+        ->set('name', $user->name)
+        ->set('email', $user->email)
+        ->set('username', 'myusername')
+        ->call('updateProfileInformation');
+
+    $response->assertHasNoErrors();
 });
 
 test('user can delete their account', function () {

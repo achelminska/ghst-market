@@ -2,6 +2,7 @@
 
 use App\Exceptions\AlreadyPurchasedException;
 use App\Exceptions\InsufficientBalanceException;
+use App\Exceptions\OwnProductPurchaseException;
 use App\Models\Product;
 use App\Services\PurchaseService;
 use Illuminate\Support\Facades\Auth;
@@ -42,6 +43,8 @@ new #[Layout('layouts.guest'), Title('Product')] class extends Component
         try {
             $service->purchase(Auth::user(), $this->product);
             unset($this->alreadyPurchased);
+        } catch (OwnProductPurchaseException) {
+            $this->errorMessage = 'You cannot purchase your own product.';
         } catch (AlreadyPurchasedException) {
             $this->errorMessage = 'You already own this product.';
         } catch (InsufficientBalanceException) {
@@ -51,24 +54,12 @@ new #[Layout('layouts.guest'), Title('Product')] class extends Component
 };
 ?>
 
-<div>
-    {{-- Cover image --}}
-    @if ($this->product->cover_image)
-        <div class="h-72 w-full overflow-hidden lg:h-96">
-            <img
-                src="{{ $this->product->cover_image }}"
-                alt="{{ $this->product->title }}"
-                class="h-full w-full object-cover"
-            >
-        </div>
-    @endif
-
-    <div class="mx-auto max-w-7xl px-6 py-10">
-        {{-- Back link --}}
+<x-page-background :image-url="$this->product->cover_image">
+    <div class="px-6 py-8">
         <a
             href="{{ route('products.index') }}"
             wire:navigate
-            class="mb-8 inline-flex items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-white"
+            class="mb-6 inline-flex items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-white"
         >
             <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -100,7 +91,7 @@ new #[Layout('layouts.guest'), Title('Product')] class extends Component
                 </h1>
 
                 <p class="mb-2 text-sm text-zinc-500">
-                    by <a href="{{ route('users.show', $this->product->user->username) }}" wire:navigate class="text-zinc-300 hover:text-white transition-colors">{{ $this->product->user->name }}</a>
+                    by <a href="{{ route('users.show', $this->product->user->username) }}" wire:navigate class="text-zinc-300 transition-colors hover:text-white">{{ $this->product->user->name }}</a>
                 </p>
 
                 <div class="mt-8 border-t border-zinc-800 pt-8">
@@ -111,6 +102,12 @@ new #[Layout('layouts.guest'), Title('Product')] class extends Component
             {{-- Right: purchase card --}}
             <div class="lg:sticky lg:top-24 lg:self-start">
                 <div class="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+                    @if ($this->product->thumbnail)
+                        <div class="mb-4 overflow-hidden rounded-xl border border-zinc-800">
+                            <img src="{{ $this->product->thumbnail }}" alt="{{ $this->product->title }}" class="aspect-video w-full object-cover">
+                        </div>
+                    @endif
+
                     <div class="mb-6">
                         <p class="text-3xl font-bold text-white">
                             {{ $this->product->price > 0 ? '$'.number_format($this->product->price, 2) : 'Free' }}
@@ -136,13 +133,12 @@ new #[Layout('layouts.guest'), Title('Product')] class extends Component
                             {{ $this->product->price > 0 ? 'Buy now' : 'Get for free' }}
                         </button>
 
-                        @auth
-                        @else
+                        @guest
                             <p class="mt-3 text-center text-xs text-zinc-600">
                                 <a href="{{ route('login') }}" wire:navigate class="underline hover:text-zinc-400">Log in</a>
                                 to purchase
                             </p>
-                        @endauth
+                        @endguest
                     @endif
 
                     @if ($errorMessage)
@@ -156,4 +152,4 @@ new #[Layout('layouts.guest'), Title('Product')] class extends Component
             </div>
         </div>
     </div>
-</div>
+</x-page-background>

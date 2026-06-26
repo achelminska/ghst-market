@@ -7,7 +7,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-new #[Layout('layouts.guest')] class extends Component
+new #[Layout('layouts.app')] class extends Component
 {
     use WithPagination;
 
@@ -33,7 +33,7 @@ new #[Layout('layouts.guest')] class extends Component
             ->with('category')
             ->withCount('purchases')
             ->latest()
-            ->paginate(18);
+            ->paginate(12);
     }
 
     #[Computed]
@@ -48,34 +48,41 @@ new #[Layout('layouts.guest')] class extends Component
 };
 ?>
 
-<div>
-    {{-- Header --}}
-    <div class="border-b border-zinc-800 bg-zinc-900/50">
-        <div class="mx-auto max-w-7xl px-6 py-12">
-            <div class="flex items-center gap-6">
-                <div class="flex size-20 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-2xl font-bold text-white">
-                    {{ $this->seller->initials() }}
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-white">{{ $this->seller->name }}</h1>
-                    <p class="mt-0.5 text-sm text-zinc-500">{{ '@'.$this->seller->username }}</p>
-                    <div class="mt-3 flex items-center gap-5 text-sm text-zinc-500">
-                        <span><span class="font-semibold text-zinc-300">{{ $this->stats['products'] }}</span> products</span>
-                        <span><span class="font-semibold text-zinc-300">{{ $this->stats['sales'] }}</span> sales</span>
-                        <span>Member since {{ $this->stats['since'] }}</span>
+<x-page-background
+    :image-url="$this->seller->profileBannerUrl()"
+    :color-preset="$this->seller->profile_background ?? 'default'"
+>
+    {{-- Profile header --}}
+    <div class="border-b border-zinc-800 px-6 py-8">
+        <div class="flex items-center gap-5">
+            <div class="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-zinc-700 bg-zinc-800">
+                @if ($this->seller->avatarUrl())
+                    <img src="{{ $this->seller->avatarUrl() }}" alt="" class="block h-20 w-20 object-cover">
+                @else
+                    <div class="flex h-20 w-20 items-center justify-center text-2xl font-bold text-white">
+                        {{ $this->seller->initials() }}
                     </div>
+                @endif
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-white">{{ $this->seller->name }}</h1>
+                <p class="mt-0.5 text-sm text-zinc-400">{{ '@'.$this->seller->username }}</p>
+                <div class="mt-3 flex flex-wrap items-center gap-4 text-sm text-zinc-500">
+                    <span><span class="font-semibold text-zinc-300">{{ $this->stats['products'] }}</span> products</span>
+                    <span><span class="font-semibold text-zinc-300">{{ $this->stats['sales'] }}</span> sales</span>
+                    <span>Member since {{ $this->stats['since'] }}</span>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Products grid --}}
-    <div class="mx-auto max-w-7xl px-6 py-10">
+    {{-- Products --}}
+    <div class="px-6 py-8">
         @if ($this->products->isEmpty())
-            <div class="py-24 text-center text-zinc-600">This creator has no public products yet.</div>
+            <div class="py-16 text-center text-zinc-600">This creator has no public products yet.</div>
         @else
             <h2 class="mb-6 text-sm font-medium uppercase tracking-widest text-zinc-500">Products</h2>
-            <div class="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 @foreach ($this->products as $product)
                     <a
                         wire:key="{{ $product->id }}"
@@ -92,7 +99,7 @@ new #[Layout('layouts.guest')] class extends Component
                                 </div>
                             @endif
                         </div>
-                        <div class="p-2">
+                        <div class="p-2.5">
                             <p class="truncate text-xs font-medium text-zinc-300 group-hover:text-white">{{ $product->title }}</p>
                             <div class="mt-0.5 flex items-center justify-between">
                                 <span class="text-xs font-semibold text-white">
@@ -107,4 +114,4 @@ new #[Layout('layouts.guest')] class extends Component
             <div class="mt-6">{{ $this->products->links() }}</div>
         @endif
     </div>
-</div>
+</x-page-background>

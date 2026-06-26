@@ -1,0 +1,59 @@
+services:
+  - type: web
+    name: ghstmarket
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: APP_NAME
+        value: "GHST Market"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: ghstmarket-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: ghstmarket-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: ghstmarket-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: ghstmarket-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: ghstmarket-db
+          property: password
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: FILESYSTEM_DISK
+        value: public
+    disk:
+      name: ghstmarket-storage
+      mountPath: /var/www/html/storage
+      sizeGB: 1
+
+databases:
+  - name: ghstmarket-db
+    databaseName: ghstmarket
+    plan: free

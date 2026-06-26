@@ -194,9 +194,9 @@ new #[Layout('layouts.app')] class extends Component
                     @error('thumbnail') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
                 </div>
 
-                {{-- Cover image --}}
+                {{-- Page background --}}
                 <div>
-                    <p class="mb-2 text-sm font-medium text-zinc-300">Cover image <span class="text-zinc-600">(1200×600 recommended)</span></p>
+                    <p class="mb-2 text-sm font-medium text-zinc-300">Page background <span class="text-zinc-600">(tileable image, repeats behind product page)</span></p>
                     <label class="block cursor-pointer overflow-hidden rounded-xl border border-dashed border-zinc-700 transition hover:border-zinc-500">
                         @if ($coverImage)
                             <img src="{{ $coverImage->temporaryUrl() }}" class="aspect-video w-full object-cover">
