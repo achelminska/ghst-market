@@ -43,13 +43,18 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
-# Install Node dependencies and build frontend (cached layer)
-COPY package.json package-lock.json vite.config.js ./
-COPY resources ./resources
-RUN npm ci && npm run build
+# Install Node dependencies (cached layer)
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Copy rest of application
+# Copy full application (after deps to preserve cache)
 COPY . .
+
+# Remove Vite dev server hot file if present
+RUN rm -f public/hot
+
+# Build frontend assets
+RUN npm run build
 
 # Optimise autoloader
 RUN composer dump-autoload --optimize

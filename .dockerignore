@@ -3,6 +3,8 @@
 .cursor
 node_modules
 vendor
+public/hot
+public/build
 storage/app/public/*
 storage/framework/cache/*
 storage/framework/sessions/*
