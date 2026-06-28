@@ -63,6 +63,11 @@ RUN composer dump-autoload --optimize
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/app.ini
 
+# PHP-FPM pool upload limits
+RUN echo "php_admin_value[upload_max_filesize] = 110M" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "php_admin_value[post_max_size] = 110M" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "php_admin_value[memory_limit] = 256M" >> /usr/local/etc/php-fpm.d/www.conf
+
 # Storage permissions
 RUN mkdir -p storage/logs storage/framework/{sessions,views,cache} \
     && chown -R www-data:www-data storage bootstrap/cache \
