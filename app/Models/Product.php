@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
-#[Fillable(['title', 'description', 'price', 'file_path', 'category_id', 'user_id'])]
+#[Fillable(['title', 'description', 'price', 'file_path', 'thumbnail', 'cover_image', 'category_id', 'user_id', 'is_active'])]
 class Product extends Model
 {
     use HasFactory, HasUuids;
@@ -40,6 +40,7 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'is_active' => 'boolean',
         ];
     }
 

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\AlreadyPurchasedException;
 use App\Exceptions\InsufficientBalanceException;
+use App\Exceptions\OwnProductPurchaseException;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\User;
@@ -13,6 +14,10 @@ class PurchaseService
 {
     public function purchase(User $user, Product $product): Purchase
     {
+        if ($user->id === $product->user_id) {
+            throw new OwnProductPurchaseException;
+        }
+
         if ($user->purchases()->where('product_id', $product->id)->exists()) {
             throw new AlreadyPurchasedException;
         }
@@ -24,6 +29,7 @@ class PurchaseService
         return DB::transaction(function () use ($user, $product) {
             if ($product->price > 0) {
                 $user->decrement('balance', $product->price);
+                $product->user->increment('balance', $product->price);
             }
 
             return $user->purchases()->create([

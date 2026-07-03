@@ -2,22 +2,22 @@
 
 namespace App\Models;
 
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'balance', 'is_admin', 'is_active', 'username', 'avatar', 'profile_background', 'profile_banner'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasUuids;
+    use HasFactory, HasUuids, Notifiable, TwoFactorAuthenticatable;
 
     protected function casts(): array
     {
@@ -47,5 +47,43 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function avatarUrl(): ?string
+    {
+        return $this->avatar ? Storage::url($this->avatar) : null;
+    }
+
+    public function profileBannerUrl(): ?string
+    {
+        return $this->profile_banner ? Storage::url($this->profile_banner) : null;
+    }
+
+    /** @return array<string, string> */
+    public static function profileBackgroundPresets(): array
+    {
+        return [
+            'default' => 'Default',
+            'violet' => 'Violet',
+            'blue' => 'Blue',
+            'emerald' => 'Emerald',
+            'rose' => 'Rose',
+            'amber' => 'Amber',
+        ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $user) {
+            if (! $user->username) {
+                $base = Str::slug($user->name);
+                $username = $base;
+                $i = 2;
+                while (self::where('username', $username)->exists()) {
+                    $username = $base.'-'.$i++;
+                }
+                $user->username = $username;
+            }
+        });
     }
 }
