@@ -14,10 +14,10 @@ php artisan storage:link --force
 # Run database migrations
 php artisan migrate --force
 
-# Cache configuration for production
-php artisan config:cache
-php artisan route:cache
-php artisan event:cache
+# Clear any stale cached config
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
 
 # Start PHP-FPM in background
 php-fpm -D
