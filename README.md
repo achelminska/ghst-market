@@ -10,15 +10,28 @@
 
 **Marketplace for digital creative assets**
 
-*Because Itch.io's UI is an abomination and someone had to fix it.*
 
 [![Tests](https://github.com/achelminska/ghst-market/actions/workflows/tests.yml/badge.svg)](https://github.com/achelminska/ghst-market/actions/workflows/tests.yml)
 [![Linter](https://github.com/achelminska/ghst-market/actions/workflows/lint.yml/badge.svg)](https://github.com/achelminska/ghst-market/actions/workflows/lint.yml)
 [![PHP](https://img.shields.io/badge/PHP-8.4+-777BB4?logo=php&logoColor=white)](https://php.net)
 [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-ghstmarket.onrender.com-brightgreen)](https://ghstmarket.onrender.com)
 
 </div>
+
+---
+
+## Live Demo
+
+**[https://ghstmarket.onrender.com](https://ghstmarket.onrender.com)**
+
+> Hosted on Render.com with persistent storage.
+
+| Role | How to access |
+|---|---|
+| User | Register a new account |
+| Admin | `/admin/login` — credentials available on request |
 
 ---
 
@@ -64,7 +77,7 @@ Creators can publish their work, set a price (or make it free), and earn virtual
 | UI Components | Flux UI v2 |
 | Client interactions | Alpine.js |
 | Styling | Tailwind CSS |
-| Auth scaffold | Laravel Livewire Starter Kit |
+| Auth scaffold | Laravel Boost + Fortify |
 | ORM | Eloquent |
 | File storage | Laravel Storage (local driver) |
 | Testing | Pest |
