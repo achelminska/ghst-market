@@ -12,12 +12,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['name', 'email', 'password', 'balance', 'is_admin', 'is_active', 'username', 'avatar', 'profile_background', 'profile_banner'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
-    use HasFactory, HasUuids, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, HasUuids, Notifiable, TwoFactorAuthenticatable, SoftDeletes;
 
     protected function casts(): array
     {
