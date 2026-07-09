@@ -8,8 +8,8 @@
         <flux:header class="border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-sm" sticky>
             <flux:sidebar.toggle class="me-2 lg:hidden" icon="bars-2" inset="left" />
 
-            <a href="{{ route('home') }}" wire:navigate class="me-6 shrink-0 text-base font-semibold tracking-tight text-white">
-                {{ config('app.name') }}
+            <a href="{{ route('home') }}" wire:navigate class="me-6 shrink-0">
+                <img src="{{ asset('images/ghst-market-logo.png') }}" alt="GHST Market" class="h-8 w-auto mix-blend-screen">
             </a>
 
             <flux:navbar class="-mb-px hidden lg:flex">

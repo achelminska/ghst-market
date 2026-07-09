@@ -11,8 +11,8 @@
     <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
         <div class="flex min-h-screen flex-col items-center justify-center px-6 py-12">
 
-            <a href="{{ route('home') }}" wire:navigate class="mb-8 text-xl font-semibold tracking-tight text-white transition-opacity hover:opacity-70">
-                {{ config('app.name') }}
+            <a href="{{ route('home') }}" wire:navigate class="mb-8 transition-opacity">
+                <img src="{{ asset('images/ghst-market-logo.png') }}" alt="GHST Market" class="h-40 w-auto mix-blend-screen">
             </a>
 
             <div class="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-8">
