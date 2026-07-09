@@ -6,7 +6,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-new #[Layout('layouts.app')] class extends Component
+new #[Layout('layouts.guest')] class extends Component
 {
     public ?string $confirmingDelete = null;
 

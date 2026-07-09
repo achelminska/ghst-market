@@ -6,7 +6,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-new #[Layout('layouts.app')] class extends Component
+new #[Layout('layouts.guest')] class extends Component
 {
     #[Validate('required|numeric|min:1|max:10000')]
     public string $amount = '';

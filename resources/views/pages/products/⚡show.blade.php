@@ -11,7 +11,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts.app'), Title('Product')] class extends Component
+new #[Layout('layouts.guest'), Title('Product')] class extends Component
 {
     public Product $product;
     public string $errorMessage = '';

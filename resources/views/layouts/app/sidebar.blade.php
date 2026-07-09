@@ -6,27 +6,25 @@
     <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
 
         <flux:header class="border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-sm" sticky>
-            <flux:sidebar.toggle class="me-2 lg:hidden" icon="bars-2" inset="left" />
-
             <a href="{{ route('home') }}" wire:navigate class="me-6 shrink-0">
-                <img src="{{ asset('images/ghst-market-logo.png') }}" alt="GHST Market" class="h-8 w-auto mix-blend-screen">
+                <img src="{{ asset('images/ghst-icon.png') }}" alt="GHST Market" class="h-14 w-auto mix-blend-screen">
             </a>
 
-            <flux:navbar class="-mb-px hidden lg:flex">
+            <flux:navbar class="-mb-px flex">
                 <flux:navbar.item :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>
                     Browse
                 </flux:navbar.item>
-                <flux:navbar.item :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                <flux:navbar.item :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate class="hidden lg:flex">
                     Dashboard
                 </flux:navbar.item>
-                <flux:navbar.item :href="route('my-purchases')" :current="request()->routeIs('my-purchases')" wire:navigate>
+                <flux:navbar.item :href="route('my-purchases')" :current="request()->routeIs('my-purchases')" wire:navigate class="hidden lg:flex">
                     My purchases
                 </flux:navbar.item>
-                <flux:navbar.item :href="route('my-products.index')" :current="request()->routeIs('my-products.*')" wire:navigate>
+                <flux:navbar.item :href="route('my-products.index')" :current="request()->routeIs('my-products.*')" wire:navigate class="hidden lg:flex">
                     My products
                 </flux:navbar.item>
                 @if (auth()->user()?->is_admin)
-                    <flux:navbar.item :href="route('admin.dashboard')" :current="request()->routeIs('admin.*')" wire:navigate>
+                    <flux:navbar.item :href="route('admin.dashboard')" :current="request()->routeIs('admin.*')" wire:navigate class="hidden lg:flex">
                         Admin
                     </flux:navbar.item>
                 @endif

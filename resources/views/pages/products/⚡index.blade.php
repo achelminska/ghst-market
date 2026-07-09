@@ -10,7 +10,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-new #[Layout('layouts.app')] class extends Component
+new #[Layout('layouts.guest')] class extends Component
 {
     use WithPagination;
 
