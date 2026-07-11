@@ -25,7 +25,7 @@ new #[Layout('layouts.guest')] class extends Component
         {{-- Mobile: pixel art logo --}}
         <img src="{{ asset('images/ghst-market-logo-pixel.png') }}" alt="GHST Market" class="mx-auto mb-4 w-80 mix-blend-screen sm:hidden">
         {{-- Desktop: original logo --}}
-        <img src="{{ asset('images/ghst-market-logo.png') }}" alt="GHST Market" class="mx-auto mb-4 hidden h-32 w-auto mix-blend-screen sm:block lg:h-40">
+        <img src="{{ asset('images/ghst-market-logo.png') }}" alt="GHST Market" class="mx-auto mb-4 hidden h-64 w-auto mix-blend-screen sm:block lg:h-80">
 
         <p class="mx-auto mt-6 max-w-lg text-lg text-zinc-500">
             Browse and download fonts, templates, illustrations, music and indie game files — or sell your own work.
