@@ -23,7 +23,7 @@ new #[Layout('layouts.guest')] class extends Component
     {{-- Hero --}}
     <section class="mx-auto max-w-7xl px-6 py-28 text-center">
         {{-- Mobile: pixel art logo --}}
-        <img src="{{ asset('images/ghst-market-logo-pixel.png') }}" alt="GHST Market" class="mx-auto mb-8 w-64 mix-blend-screen sm:hidden">
+        <img src="{{ asset('images/ghst-market-logo-pixel.png') }}" alt="GHST Market" class="mx-auto mb-8 w-80 mix-blend-screen sm:hidden">
         {{-- Desktop: original logo --}}
         <img src="{{ asset('images/ghst-market-logo.png') }}" alt="GHST Market" class="mx-auto mb-8 hidden h-56 w-auto mix-blend-screen sm:block lg:h-64">
 
