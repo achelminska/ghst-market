@@ -106,6 +106,37 @@ test('user can delete their account', function () {
     expect(auth()->check())->toBeFalse();
 });
 
+test('deleting account frees up email and username for re-registration', function () {
+    $user = User::factory()->create([
+        'name' => 'Aleksandra',
+        'email' => 'tester@example.com',
+    ]);
+    $originalUsername = $user->username;
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::settings.delete-user-modal')
+        ->set('password', 'password')
+        ->call('deleteUser')
+        ->assertHasNoErrors();
+
+    $trashed = User::withTrashed()->find($user->id);
+
+    expect($trashed->email)->not->toEqual('tester@example.com');
+    expect($trashed->username)->not->toEqual($originalUsername);
+
+    $response = $this->post(route('register.store'), [
+        'name' => 'Aleksandra',
+        'email' => 'tester@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ]);
+
+    $response->assertSessionHasNoErrors();
+
+    expect(User::where('email', 'tester@example.com')->exists())->toBeTrue();
+});
+
 test('correct password must be provided to delete account', function () {
     $user = User::factory()->create();
 
