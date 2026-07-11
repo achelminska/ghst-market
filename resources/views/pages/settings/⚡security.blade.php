@@ -57,15 +57,19 @@ new #[Title('Security settings')] class extends Component {
                 autocomplete="current-password"
                 viewable
             />
-            <flux:input
-                wire:model="password"
-                :label="__('New password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
-                viewable
-            />
+            <div x-data="{ pw: '' }">
+                <flux:input
+                    wire:model="password"
+                    :label="__('New password')"
+                    type="password"
+                    required
+                    autocomplete="new-password"
+                    passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
+                    viewable
+                    x-on:input="pw = $event.target.value"
+                />
+                <x-password-requirements variable="pw" />
+            </div>
             <flux:input
                 wire:model="password_confirmation"
                 :label="__('Confirm password')"

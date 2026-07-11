@@ -102,7 +102,7 @@ test('user can delete their account', function () {
         ->assertHasNoErrors()
         ->assertRedirect('/');
 
-    expect($user->fresh())->toBeNull();
+    expect(User::withTrashed()->find($user->id)?->deleted_at)->not->toBeNull();
     expect(auth()->check())->toBeFalse();
 });
 
