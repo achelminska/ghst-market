@@ -21,7 +21,7 @@ new #[Layout('layouts.guest')] class extends Component
 
 <div>
     {{-- Hero --}}
-    <section class="mx-auto max-w-7xl px-6 py-28 text-center">
+    <section class="mx-auto max-w-7xl px-6 py-12 text-center sm:py-28">
         {{-- Mobile: pixel art logo --}}
         <img src="{{ asset('images/ghst-market-logo-pixel.png') }}" alt="GHST Market" class="mx-auto mb-8 w-80 mix-blend-screen sm:hidden">
         {{-- Desktop: original logo --}}
