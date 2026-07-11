@@ -14,7 +14,7 @@
 
             <a href="{{ route('home') }}" wire:navigate class="mb-8 transition-opacity">
                 <img src="{{ asset('images/ghst-market-logo.png') }}" alt="GHST Market" class="hidden h-40 w-auto mix-blend-screen sm:block">
-                <img src="{{ asset('images/ghst-icon-large.png') }}" alt="GHST Market" class="block h-40 w-auto mix-blend-screen sm:hidden" style="filter: brightness(2) contrast(1.2); mix-blend-mode: screen;">
+                <img src="{{ asset('images/ghst-icon.png') }}" alt="GHST Market" class="block h-40 w-auto mix-blend-screen sm:hidden">
             </a>
 
             <div class="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-8">
