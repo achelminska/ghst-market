@@ -22,7 +22,10 @@ new #[Layout('layouts.guest')] class extends Component
 <div>
     {{-- Hero --}}
     <section class="mx-auto max-w-7xl px-6 py-28 text-center">
-        <img src="{{ asset('images/ghst-market-logo.png') }}" alt="GHST Market" class="mx-auto mb-8 h-48 w-auto mix-blend-screen sm:h-56 lg:h-64">
+        {{-- Mobile: pixel art logo --}}
+        <img src="{{ asset('images/ghst-market-logo-pixel.png') }}" alt="GHST Market" class="mx-auto mb-8 w-64 mix-blend-screen sm:hidden">
+        {{-- Desktop: original logo --}}
+        <img src="{{ asset('images/ghst-market-logo.png') }}" alt="GHST Market" class="mx-auto mb-8 hidden h-56 w-auto mix-blend-screen sm:block lg:h-64">
 
         <p class="mx-auto mt-6 max-w-lg text-lg text-zinc-500">
             Browse and download fonts, templates, illustrations, music and indie game files — or sell your own work.
