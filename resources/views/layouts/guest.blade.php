@@ -45,13 +45,13 @@
             {{ $slot }}
         </main>
 
-        <footer class="mt-16 border-t border-zinc-800/60 py-12">
+        <footer class="mt-16 border-t border-zinc-800/60 py-10 sm:py-12">
             <div class="mx-auto max-w-7xl px-6">
-                <div class="grid gap-10 sm:grid-cols-3">
+                <div class="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 sm:gap-10">
                     {{-- Brand --}}
-                    <div>
-                        <img src="{{ asset('images/ghst-icon.png') }}" alt="GHST Market" class="mb-3 h-12 w-auto mix-blend-screen">
-                        <p class="text-sm leading-relaxed text-zinc-500">
+                    <div class="col-span-2 flex flex-col items-center text-center sm:col-span-1 sm:items-start sm:text-left">
+                        <img src="{{ asset('images/ghst-icon.png') }}" alt="GHST Market" class="mb-3 h-10 w-auto mix-blend-screen sm:h-12">
+                        <p class="max-w-xs text-sm leading-relaxed text-zinc-500 sm:max-w-none">
                             A marketplace for digital creative assets — fonts, templates, illustrations, music and indie game files.
                         </p>
                     </div>
@@ -84,7 +84,7 @@
                     </div>
                 </div>
 
-                <div class="mt-10 flex flex-col items-center justify-between gap-3 border-t border-zinc-800/60 pt-6 text-xs text-zinc-600 sm:flex-row">
+                <div class="mt-8 flex flex-col items-center gap-3 border-t border-zinc-800/60 pt-6 text-center text-xs text-zinc-600 sm:mt-10 sm:flex-row sm:justify-between sm:text-left">
                     <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
                     <p class="flex items-center gap-1.5">
                         <svg class="size-3.5 text-accent" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z" clip-rule="evenodd" /></svg>
