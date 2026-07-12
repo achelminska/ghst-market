@@ -67,9 +67,10 @@ new #[Layout('layouts.guest')] class extends Component
         <div class="grid gap-6 lg:grid-cols-3">
             {{-- Balance + top-up --}}
             <div class="space-y-4">
-                <div class="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+                <div class="relative overflow-hidden rounded-2xl border border-accent/20 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6">
+                    <img src="{{ asset('images/ghst-icon.png') }}" alt="" class="pointer-events-none absolute -right-4 -top-4 h-24 w-auto opacity-10 mix-blend-screen">
                     <p class="text-xs font-medium uppercase tracking-widest text-zinc-500">Current balance</p>
-                    <p class="mt-3 text-4xl font-bold text-white">${{ number_format(Auth::user()->balance, 2) }}</p>
+                    <p class="mt-3 font-display text-3xl text-accent">${{ number_format(Auth::user()->balance, 2) }}</p>
                 </div>
 
                 <div class="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
@@ -102,7 +103,7 @@ new #[Layout('layouts.guest')] class extends Component
                                 <button
                                     type="button"
                                     wire:click="$set('amount', '{{ $preset }}')"
-                                    class="rounded-lg border border-zinc-700 py-1.5 text-xs font-medium text-zinc-400 transition hover:border-zinc-500 hover:text-white"
+                                    class="rounded-lg border py-1.5 text-xs font-medium transition duration-200 {{ $amount === (string) $preset ? 'border-accent/60 bg-accent/10 text-accent' : 'border-zinc-700 text-zinc-400 hover:border-accent/40 hover:text-accent' }}"
                                 >
                                     ${{ $preset }}
                                 </button>
@@ -122,8 +123,10 @@ new #[Layout('layouts.guest')] class extends Component
                 <h2 class="mb-4 text-sm font-semibold text-white">Transaction history</h2>
 
                 @if ($this->transactions->isEmpty())
-                    <div class="rounded-2xl border border-zinc-800 bg-zinc-900 py-12 text-center">
+                    <div class="flex flex-col items-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/50 py-12 text-center">
+                        <img src="{{ asset('images/ghst-icon.png') }}" alt="" class="mb-3 h-12 w-auto opacity-30 mix-blend-screen">
                         <p class="text-sm text-zinc-500">No transactions yet.</p>
+                        <p class="mt-1 text-xs text-zinc-600">Top up your wallet or make your first purchase.</p>
                     </div>
                 @else
                     <div class="overflow-hidden rounded-2xl border border-zinc-800">

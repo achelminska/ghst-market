@@ -32,7 +32,7 @@
                             Log in
                         </a>
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" wire:navigate class="rounded-lg bg-white px-4 py-1.5 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100">
+                            <a href="{{ route('register') }}" wire:navigate class="rounded-lg bg-accent px-4 py-1.5 text-sm font-semibold text-accent-foreground transition-colors duration-200 hover:bg-green-300">
                                 Sign up
                             </a>
                         @endif
@@ -45,11 +45,60 @@
             {{ $slot }}
         </main>
 
-        <footer class="mt-16 border-t border-zinc-800/60 py-8">
-            <div class="mx-auto max-w-7xl px-6 text-center text-sm text-zinc-600">
-                &copy; {{ date('Y') }} {{ config('app.name') }}
+        <footer class="mt-16 border-t border-zinc-800/60 py-12">
+            <div class="mx-auto max-w-7xl px-6">
+                <div class="grid gap-10 sm:grid-cols-3">
+                    {{-- Brand --}}
+                    <div>
+                        <img src="{{ asset('images/ghst-icon.png') }}" alt="GHST Market" class="mb-3 h-12 w-auto mix-blend-screen">
+                        <p class="text-sm leading-relaxed text-zinc-500">
+                            A marketplace for digital creative assets — fonts, templates, illustrations, music and indie game files.
+                        </p>
+                    </div>
+
+                    {{-- Explore --}}
+                    <div>
+                        <p class="mb-3 font-display text-xs uppercase tracking-widest text-zinc-400">Explore</p>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="{{ route('products.index') }}" wire:navigate class="text-zinc-500 transition-colors hover:text-accent">Browse products</a></li>
+                            <li><a href="{{ route('products.index', ['tab' => 'creators']) }}" wire:navigate class="text-zinc-500 transition-colors hover:text-accent">Creators</a></li>
+                            <li><a href="{{ route('home') }}" wire:navigate class="text-zinc-500 transition-colors hover:text-accent">Home</a></li>
+                        </ul>
+                    </div>
+
+                    {{-- Account --}}
+                    <div>
+                        <p class="mb-3 font-display text-xs uppercase tracking-widest text-zinc-400">Account</p>
+                        <ul class="space-y-2 text-sm">
+                            @auth
+                                <li><a href="{{ route('dashboard') }}" wire:navigate class="text-zinc-500 transition-colors hover:text-accent">Dashboard</a></li>
+                                <li><a href="{{ route('my-products.index') }}" wire:navigate class="text-zinc-500 transition-colors hover:text-accent">Sell your work</a></li>
+                                <li><a href="{{ route('wallet') }}" wire:navigate class="text-zinc-500 transition-colors hover:text-accent">Wallet</a></li>
+                            @else
+                                <li><a href="{{ route('login') }}" wire:navigate class="text-zinc-500 transition-colors hover:text-accent">Log in</a></li>
+                                @if (Route::has('register'))
+                                    <li><a href="{{ route('register') }}" wire:navigate class="text-zinc-500 transition-colors hover:text-accent">Create an account</a></li>
+                                @endif
+                            @endauth
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-10 flex flex-col items-center justify-between gap-3 border-t border-zinc-800/60 pt-6 text-xs text-zinc-600 sm:flex-row">
+                    <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+                    <p class="flex items-center gap-1.5">
+                        <svg class="size-3.5 text-accent" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z" clip-rule="evenodd" /></svg>
+                        Secure downloads &middot; Instant access
+                    </p>
+                </div>
             </div>
         </footer>
+
+        @persist('toast')
+            <flux:toast.group>
+                <flux:toast />
+            </flux:toast.group>
+        @endpersist
 
         @fluxScripts
     </body>

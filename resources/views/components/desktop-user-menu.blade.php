@@ -20,6 +20,19 @@
         </div>
         <flux:menu.separator />
         <flux:menu.radio.group>
+            <flux:menu.item :href="route('dashboard')" icon="home" wire:navigate>
+                {{ __('Dashboard') }}
+            </flux:menu.item>
+            <flux:menu.item :href="route('my-products.index')" icon="cube" wire:navigate>
+                {{ __('My products') }}
+            </flux:menu.item>
+            <flux:menu.item :href="route('my-purchases')" icon="shopping-bag" wire:navigate>
+                {{ __('My purchases') }}
+            </flux:menu.item>
+            <flux:menu.item :href="route('wallet')" icon="wallet" wire:navigate>
+                {{ __('Wallet') }}
+            </flux:menu.item>
+            <flux:menu.separator />
             <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
                 {{ __('Settings') }}
             </flux:menu.item>

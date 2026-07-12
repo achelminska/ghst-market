@@ -44,6 +44,12 @@ new #[Layout('layouts.guest')] class extends Component
         $this->search = '';
     }
 
+    public function clearFilters(): void
+    {
+        $this->reset('search', 'category', 'price', 'tag');
+        $this->resetPage();
+    }
+
     public function updatedSearch(): void { $this->resetPage(); }
     public function updatedCategory(): void { $this->resetPage(); }
     public function updatedPrice(): void { $this->resetPage(); }
@@ -91,7 +97,9 @@ new #[Layout('layouts.guest')] class extends Component
     #[Computed]
     public function categories()
     {
-        return Category::orderBy('name')->get();
+        return Category::orderBy('name')
+            ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
+            ->get();
     }
 
     #[Computed]
@@ -109,13 +117,13 @@ new #[Layout('layouts.guest')] class extends Component
             <div class="flex gap-6">
                 <button
                     wire:click="$set('tab', 'products')"
-                    class="border-b-2 py-4 text-sm font-medium transition-colors {{ $tab === 'products' ? 'border-white text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300' }}"
+                    class="border-b-2 py-4 text-sm font-medium transition-colors {{ $tab === 'products' ? 'border-accent text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300' }}"
                 >
                     Products
                 </button>
                 <button
                     wire:click="$set('tab', 'creators')"
-                    class="border-b-2 py-4 text-sm font-medium transition-colors {{ $tab === 'creators' ? 'border-white text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300' }}"
+                    class="border-b-2 py-4 text-sm font-medium transition-colors {{ $tab === 'creators' ? 'border-accent text-white' : 'border-transparent text-zinc-500 hover:text-zinc-300' }}"
                 >
                     Creators
                 </button>
@@ -137,7 +145,7 @@ new #[Layout('layouts.guest')] class extends Component
                         <ul class="space-y-1">
                             @foreach (['' => 'All', 'free' => 'Free', 'paid' => 'Paid'] as $value => $label)
                                 <li>
-                                    <button wire:click="$set('price', '{{ $value }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $price === $value ? 'text-white' : 'text-zinc-400' }}">
+                                    <button wire:click="$set('price', '{{ $value }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $price === $value ? 'bg-zinc-800/70 font-medium text-accent' : 'text-zinc-400' }}">
                                         {{ $label }}
                                     </button>
                                 </li>
@@ -149,14 +157,15 @@ new #[Layout('layouts.guest')] class extends Component
                         <p class="mb-2 text-xs font-medium text-zinc-400">Category</p>
                         <ul class="space-y-1">
                             <li>
-                                <button wire:click="$set('category', '')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $category === '' ? 'text-white' : 'text-zinc-400' }}">
+                                <button wire:click="$set('category', '')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $category === '' ? 'bg-zinc-800/70 font-medium text-accent' : 'text-zinc-400' }}">
                                     All categories
                                 </button>
                             </li>
                             @foreach ($this->categories as $cat)
                                 <li>
-                                    <button wire:key="{{ $cat->id }}" wire:click="$set('category', '{{ $cat->id }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $category === $cat->id ? 'text-white' : 'text-zinc-400' }}">
-                                        {{ $cat->name }}
+                                    <button wire:key="{{ $cat->id }}" wire:click="$set('category', '{{ $cat->id }}')" class="flex w-full items-center justify-between gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $category === $cat->id ? 'bg-zinc-800/70 font-medium text-accent' : 'text-zinc-400' }}">
+                                        <span class="truncate">{{ $cat->name }}</span>
+                                        <span class="text-xs {{ $category === $cat->id ? 'text-accent/70' : 'text-zinc-600' }}">{{ $cat->products_count }}</span>
                                     </button>
                                 </li>
                             @endforeach
@@ -168,7 +177,7 @@ new #[Layout('layouts.guest')] class extends Component
                         <ul class="space-y-1">
                             @foreach (['newest' => 'Most recent', 'price_asc' => 'Price: low to high', 'price_desc' => 'Price: high to low'] as $value => $label)
                                 <li>
-                                    <button wire:click="$set('sort', '{{ $value }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $sort === $value ? 'text-white' : 'text-zinc-400' }}">
+                                    <button wire:click="$set('sort', '{{ $value }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $sort === $value ? 'bg-zinc-800/70 font-medium text-accent' : 'text-zinc-400' }}">
                                         {{ $label }}
                                     </button>
                                 </li>
@@ -187,13 +196,13 @@ new #[Layout('layouts.guest')] class extends Component
                         <p class="mb-2 text-xs font-medium text-zinc-400">Category</p>
                         <ul class="space-y-1">
                             <li>
-                                <button wire:click="$set('creatorCategory', '')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $creatorCategory === '' ? 'text-white' : 'text-zinc-400' }}">
+                                <button wire:click="$set('creatorCategory', '')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $creatorCategory === '' ? 'bg-zinc-800/70 font-medium text-accent' : 'text-zinc-400' }}">
                                     All categories
                                 </button>
                             </li>
                             @foreach ($this->categories as $cat)
                                 <li>
-                                    <button wire:key="{{ $cat->id }}" wire:click="$set('creatorCategory', '{{ $cat->id }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $creatorCategory === $cat->id ? 'text-white' : 'text-zinc-400' }}">
+                                    <button wire:key="{{ $cat->id }}" wire:click="$set('creatorCategory', '{{ $cat->id }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $creatorCategory === $cat->id ? 'bg-zinc-800/70 font-medium text-accent' : 'text-zinc-400' }}">
                                         {{ $cat->name }}
                                     </button>
                                 </li>
@@ -206,7 +215,7 @@ new #[Layout('layouts.guest')] class extends Component
                         <ul class="space-y-1">
                             @foreach (['popular' => 'Most products', 'newest' => 'Newest', 'name' => 'Alphabetically'] as $value => $label)
                                 <li>
-                                    <button wire:click="$set('creatorSort', '{{ $value }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $creatorSort === $value ? 'text-white' : 'text-zinc-400' }}">
+                                    <button wire:click="$set('creatorSort', '{{ $value }}')" class="flex w-full items-center gap-2 rounded px-2 py-1 text-sm transition-colors hover:bg-zinc-800 {{ $creatorSort === $value ? 'bg-zinc-800/70 font-medium text-accent' : 'text-zinc-400' }}">
                                         {{ $label }}
                                     </button>
                                 </li>
@@ -243,40 +252,33 @@ new #[Layout('layouts.guest')] class extends Component
                         </div>
                     @endif
 
-                    <div class="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                    {{-- Skeleton grid while filtering/searching --}}
+                    <div wire:loading.grid wire:target="search, category, price, sort, tag" class="hidden grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+                        @foreach (range(1, 8) as $i)
+                            <div class="animate-pulse overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
+                                <div class="aspect-[4/3] w-full bg-zinc-800"></div>
+                                <div class="space-y-2 p-4">
+                                    <div class="h-4 w-3/4 rounded bg-zinc-800"></div>
+                                    <div class="h-3 w-1/3 rounded bg-zinc-800"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div wire:loading.remove wire:target="search, category, price, sort, tag" class="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
                         @forelse ($this->products as $product)
-                            <a
-                                wire:key="{{ $product->id }}"
-                                href="{{ route('products.show', $product->slug) }}"
-                                wire:navigate
-                                class="group block rounded-lg border border-zinc-800 bg-zinc-900 transition hover:border-zinc-700 hover:bg-zinc-800/60"
-                            >
-                                <div class="aspect-[4/3] w-full overflow-hidden rounded-t-lg bg-zinc-800">
-                                    @if ($product->thumbnail)
-                                        <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}" class="h-full w-full object-cover transition group-hover:scale-105">
-                                    @else
-                                        <div class="flex h-full items-center justify-center">
-                                            <svg class="size-6 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 16.5V19a.75.75 0 00.75.75h16.5A.75.75 0 0021 19v-2.5M3 16.5V7.5A.75.75 0 013.75 6.75h16.5A.75.75 0 0121 7.5v9" />
-                                            </svg>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="p-2">
-                                    <p class="truncate text-xs font-medium text-zinc-300 group-hover:text-white">{{ $product->title }}</p>
-                                    <div class="mt-0.5 flex items-center justify-between">
-                                        <span class="text-xs font-semibold text-white">
-                                            {{ $product->price > 0 ? '$'.number_format($product->price, 2) : 'Free' }}
-                                        </span>
-                                        @if ($product->category)
-                                            <span class="truncate text-xs text-zinc-600">{{ $product->category->name }}</span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </a>
+                            <x-product-card :product="$product" wire:key="{{ $product->id }}" />
                         @empty
-                            <div class="col-span-full py-20 text-center">
-                                <p class="text-zinc-500">No products found.</p>
+                            <div class="col-span-full flex flex-col items-center py-20 text-center">
+                                <img src="{{ asset('images/ghst-icon.png') }}" alt="" class="mb-4 h-16 w-auto opacity-30 mix-blend-screen">
+                                <p class="font-display text-sm text-zinc-400">Nothing here but ghosts</p>
+                                <p class="mt-2 text-sm text-zinc-500">No products match your filters.</p>
+                                <button
+                                    wire:click="clearFilters"
+                                    class="mt-6 rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-accent/50 hover:text-accent"
+                                >
+                                    Clear all filters
+                                </button>
                             </div>
                         @endforelse
                     </div>
@@ -301,7 +303,7 @@ new #[Layout('layouts.guest')] class extends Component
                                 wire:key="{{ $creator->id }}"
                                 href="{{ route('users.show', $creator->username) }}"
                                 wire:navigate
-                                class="group overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-zinc-700"
+                                class="group overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-lg hover:shadow-accent/10"
                             >
                                 {{-- Background strip --}}
                                 <div @class([
@@ -338,8 +340,10 @@ new #[Layout('layouts.guest')] class extends Component
                                 </div>
                             </a>
                         @empty
-                            <div class="col-span-full py-20 text-center">
-                                <p class="text-zinc-500">No creators found.</p>
+                            <div class="col-span-full flex flex-col items-center py-20 text-center">
+                                <img src="{{ asset('images/ghst-icon.png') }}" alt="" class="mb-4 h-16 w-auto opacity-30 mix-blend-screen">
+                                <p class="font-display text-sm text-zinc-400">Nothing here but ghosts</p>
+                                <p class="mt-2 text-sm text-zinc-500">No creators match your filters.</p>
                             </div>
                         @endforelse
                     </div>

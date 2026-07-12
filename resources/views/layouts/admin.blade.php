@@ -14,9 +14,10 @@
             {{-- Sidebar --}}
             <aside class="hidden w-56 shrink-0 flex-col border-e border-zinc-800 bg-zinc-900 lg:flex">
                 <div class="border-b border-zinc-800 px-5 py-4">
-                    <a href="{{ route('admin.dashboard') }}" class="text-sm font-semibold text-white">
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 text-sm font-semibold text-white">
+                        <img src="{{ asset('images/ghst-icon.png') }}" alt="" class="h-7 w-auto mix-blend-screen">
                         {{ config('app.name') }}
-                        <span class="ml-1.5 rounded bg-zinc-700 px-1.5 py-0.5 text-xs text-zinc-400">admin</span>
+                        <span class="rounded bg-accent/15 px-1.5 py-0.5 font-display text-xs text-accent">admin</span>
                     </a>
                 </div>
 
@@ -36,7 +37,7 @@
                             href="{{ route($link['route']) }}"
                             class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors
                                 {{ request()->routeIs($link['route'])
-                                    ? 'bg-zinc-800 text-white'
+                                    ? 'bg-zinc-800 text-accent'
                                     : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-white' }}"
                         >
                             @if ($link['icon'] === 'squares')

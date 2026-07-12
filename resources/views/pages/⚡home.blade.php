@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\User;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -16,6 +18,23 @@ new #[Layout('layouts.guest')] class extends Component
             ->limit(8)
             ->get();
     }
+
+    #[Computed]
+    public function categories()
+    {
+        return Category::orderBy('name')->get();
+    }
+
+    /** @return array{products: int, creators: int, free: int} */
+    #[Computed]
+    public function stats(): array
+    {
+        return [
+            'products' => Product::where('is_active', true)->count(),
+            'creators' => User::where('is_admin', false)->whereHas('products', fn ($q) => $q->where('is_active', true))->count(),
+            'free' => Product::where('is_active', true)->where('price', 0)->count(),
+        ];
+    }
 };
 ?>
 
@@ -27,15 +46,19 @@ new #[Layout('layouts.guest')] class extends Component
         {{-- Desktop: original logo --}}
         <img src="{{ asset('images/ghst-market-logo.png') }}" alt="GHST Market" class="mx-auto mb-4 hidden h-64 w-auto mix-blend-screen sm:block lg:h-80">
 
-        <p class="mx-auto mt-6 max-w-lg text-lg text-zinc-500">
+        <h1 class="mx-auto mt-4 max-w-2xl font-display text-lg text-zinc-200 sm:text-xl">
+            Digital assets from indie creators
+        </h1>
+
+        <p class="mx-auto mt-4 max-w-lg text-lg text-zinc-500">
             Browse and download fonts, templates, illustrations, music and indie game files — or sell your own work.
         </p>
 
-        <div class="mt-10 flex items-center justify-center gap-4">
+        <div class="mt-8 flex items-center justify-center gap-4">
             <a
                 href="{{ route('products.index') }}"
                 wire:navigate
-                class="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-zinc-900 shadow transition-colors hover:bg-zinc-100"
+                class="rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition duration-200 hover:bg-green-300"
             >
                 Browse products
             </a>
@@ -44,57 +67,58 @@ new #[Layout('layouts.guest')] class extends Component
                 <a
                     href="{{ route('register') }}"
                     wire:navigate
-                    class="rounded-xl border border-zinc-700 px-6 py-3 text-sm font-semibold text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white"
+                    class="rounded-xl border border-zinc-700 px-6 py-3 text-sm font-semibold text-zinc-300 transition duration-200 hover:border-accent/50 hover:text-white"
                 >
                     Start selling
                 </a>
             @endguest
         </div>
+
+        {{-- Category pills --}}
+        @if ($this->categories->isNotEmpty())
+            <div class="mt-10 flex flex-wrap items-center justify-center gap-2">
+                @foreach ($this->categories as $cat)
+                    <a
+                        href="{{ route('products.index', ['category' => $cat->id]) }}"
+                        wire:navigate
+                        class="rounded-full border border-zinc-800 bg-zinc-900 px-4 py-1.5 text-sm text-zinc-400 transition duration-200 hover:border-accent/40 hover:text-accent"
+                    >
+                        {{ $cat->name }}
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
+        {{-- Stats --}}
+        <div class="mx-auto mt-12 grid max-w-lg grid-cols-3 gap-4 border-t border-zinc-800/60 pt-8">
+            <div>
+                <p class="font-display text-xl text-accent">{{ $this->stats['products'] }}</p>
+                <p class="mt-1 text-xs uppercase tracking-widest text-zinc-500">Products</p>
+            </div>
+            <div>
+                <p class="font-display text-xl text-accent">{{ $this->stats['creators'] }}</p>
+                <p class="mt-1 text-xs uppercase tracking-widest text-zinc-500">Creators</p>
+            </div>
+            <div>
+                <p class="font-display text-xl text-accent">{{ $this->stats['free'] }}</p>
+                <p class="mt-1 text-xs uppercase tracking-widest text-zinc-500">Free assets</p>
+            </div>
+        </div>
     </section>
 
     {{-- Products grid --}}
     @if ($this->featuredProducts->isNotEmpty())
-        <section class="mx-auto max-w-7xl px-6 pb-24">
+        <section class="mx-auto max-w-7xl px-6 pb-24 pt-12">
             <div class="mb-8 flex items-center justify-between">
-                <h2 class="text-base font-semibold text-white">Latest products</h2>
-                <a href="{{ route('products.index') }}" wire:navigate class="text-sm text-zinc-500 transition-colors hover:text-white">
+                <h2 class="font-display text-base text-white">Latest products</h2>
+                <a href="{{ route('products.index') }}" wire:navigate class="text-sm text-zinc-500 transition-colors hover:text-accent">
                     View all →
                 </a>
             </div>
 
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                 @foreach ($this->featuredProducts as $product)
-                    <a
-                        href="{{ route('products.show', $product->slug) }}"
-                        wire:navigate
-                        class="group block rounded-2xl border border-zinc-800 bg-zinc-900 p-4 transition hover:border-zinc-700 hover:bg-zinc-800/60"
-                    >
-                        <div class="mb-4 flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-xl bg-zinc-800">
-                            @if ($product->thumbnail)
-                                <img src="{{ $product->thumbnail }}" alt="{{ $product->title }}" class="h-full w-full object-cover">
-                            @else
-                                <svg class="size-10 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 16.5V19a.75.75 0 00.75.75h16.5A.75.75 0 0021 19v-2.5M3 16.5V7.5A.75.75 0 013.75 6.75h16.5A.75.75 0 0121 7.5v9" />
-                                </svg>
-                            @endif
-                        </div>
-
-                        <p class="truncate text-sm font-medium text-zinc-200 transition-colors group-hover:text-white">
-                            {{ $product->title }}
-                        </p>
-
-                        <div class="mt-1 flex items-center justify-between">
-                            <span class="text-sm font-semibold text-white">
-                                {{ $product->price > 0 ? '$'.number_format($product->price, 2) : 'Free' }}
-                            </span>
-
-                            @if ($product->category)
-                                <span class="rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-500">
-                                    {{ $product->category->name }}
-                                </span>
-                            @endif
-                        </div>
-                    </a>
+                    <x-product-card :product="$product" wire:key="{{ $product->id }}" />
                 @endforeach
             </div>
         </section>

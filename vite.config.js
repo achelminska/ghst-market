@@ -14,6 +14,9 @@ export default defineConfig({
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
                 }),
+                bunny('Silkscreen', {
+                    weights: [400, 700],
+                }),
             ],
         }),
         tailwindcss(),

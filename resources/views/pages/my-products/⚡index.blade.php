@@ -44,7 +44,7 @@ new #[Layout('layouts.guest')] class extends Component
             <a
                 href="{{ route('my-products.create') }}"
                 wire:navigate
-                class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-100"
+                class="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition duration-200 hover:bg-green-300"
             >
                 <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                 New product
@@ -52,9 +52,11 @@ new #[Layout('layouts.guest')] class extends Component
         </div>
 
         @if ($this->products->isEmpty())
-            <div class="rounded-2xl border border-dashed border-zinc-800 py-20 text-center">
-                <p class="text-zinc-500">You haven't listed any products yet.</p>
-                <a href="{{ route('my-products.create') }}" wire:navigate class="mt-4 inline-block rounded-xl bg-white px-5 py-2 text-sm font-semibold text-zinc-900 hover:bg-zinc-100">
+            <div class="flex flex-col items-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/50 py-20 text-center">
+                <img src="{{ asset('images/ghst-icon.png') }}" alt="" class="mb-4 h-16 w-auto opacity-30 mix-blend-screen">
+                <p class="font-display text-sm text-zinc-400">Nothing to sell yet</p>
+                <p class="mt-2 text-sm text-zinc-500">Share your work with the community and start earning.</p>
+                <a href="{{ route('my-products.create') }}" wire:navigate class="mt-6 inline-block rounded-xl bg-accent px-5 py-2 text-sm font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-colors hover:bg-green-300">
                     Create your first product
                 </a>
             </div>

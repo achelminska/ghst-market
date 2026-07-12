@@ -68,26 +68,25 @@ new #[Layout('layouts.guest')] class extends Component
 
         {{-- Stats --}}
         <div class="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-                <p class="text-xs font-medium uppercase tracking-widest text-zinc-500">Library</p>
-                <p class="mt-2 text-3xl font-bold text-white">{{ $this->stats['library'] }}</p>
-                <p class="mt-1 text-xs text-zinc-600">items purchased</p>
-            </div>
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-                <p class="text-xs font-medium uppercase tracking-widest text-zinc-500">Spent</p>
-                <p class="mt-2 text-3xl font-bold text-white">${{ number_format($this->stats['spent'], 2) }}</p>
-                <p class="mt-1 text-xs text-zinc-600">total purchases</p>
-            </div>
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-                <p class="text-xs font-medium uppercase tracking-widest text-zinc-500">Listed</p>
-                <p class="mt-2 text-3xl font-bold text-white">{{ $this->stats['listed'] }}</p>
-                <p class="mt-1 text-xs text-zinc-600">active products</p>
-            </div>
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-                <p class="text-xs font-medium uppercase tracking-widest text-zinc-500">Earned</p>
-                <p class="mt-2 text-3xl font-bold text-white">${{ number_format($this->stats['earned'], 2) }}</p>
-                <p class="mt-1 text-xs text-zinc-600">from your products</p>
-            </div>
+            @foreach ([
+                ['label' => 'Library', 'value' => $this->stats['library'], 'caption' => 'items purchased', 'icon' => 'M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776'],
+                ['label' => 'Spent', 'value' => '$'.number_format($this->stats['spent'], 2), 'caption' => 'total purchases', 'icon' => 'M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z'],
+                ['label' => 'Listed', 'value' => $this->stats['listed'], 'caption' => 'active products', 'icon' => 'm21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9'],
+                ['label' => 'Earned', 'value' => '$'.number_format($this->stats['earned'], 2), 'caption' => 'from your products', 'icon' => 'M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'],
+            ] as $stat)
+                <div class="rounded-xl border border-zinc-800 bg-zinc-900 p-5 transition duration-200 hover:border-zinc-700">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-medium uppercase tracking-widest text-zinc-500">{{ $stat['label'] }}</p>
+                        <span class="flex size-8 items-center justify-center rounded-lg bg-accent/10">
+                            <svg class="size-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $stat['icon'] }}" />
+                            </svg>
+                        </span>
+                    </div>
+                    <p class="mt-2 text-3xl font-bold text-white">{{ $stat['value'] }}</p>
+                    <p class="mt-1 text-xs text-zinc-600">{{ $stat['caption'] }}</p>
+                </div>
+            @endforeach
         </div>
 
         <div class="grid gap-8 lg:grid-cols-3">
@@ -99,9 +98,10 @@ new #[Layout('layouts.guest')] class extends Component
                 </div>
 
                 @if ($this->recentPurchases->isEmpty())
-                    <div class="rounded-xl border border-zinc-800 bg-zinc-900 px-6 py-12 text-center">
-                        <p class="text-sm text-zinc-500">No purchases yet.</p>
-                        <a href="{{ route('products.index') }}" wire:navigate class="mt-3 inline-block text-sm text-white underline">Browse products</a>
+                    <div class="flex flex-col items-center rounded-xl border border-dashed border-zinc-800 bg-zinc-900/50 px-6 py-12 text-center">
+                        <img src="{{ asset('images/ghst-icon.png') }}" alt="" class="mb-3 h-12 w-auto opacity-30 mix-blend-screen">
+                        <p class="text-sm text-zinc-500">Your library is empty.</p>
+                        <a href="{{ route('products.index') }}" wire:navigate class="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-colors hover:bg-green-300">Browse products</a>
                     </div>
                 @else
                     <div class="space-y-2">
