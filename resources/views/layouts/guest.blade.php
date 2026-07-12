@@ -14,7 +14,7 @@
             <div class="flex h-16 items-center justify-between px-4 sm:px-6">
                 <a href="{{ route('home') }}" wire:navigate class="group flex items-center gap-2.5">
                     <img src="{{ asset('images/ghst-icon.png') }}" alt="" class="h-10 w-auto mix-blend-screen transition-transform duration-200 group-hover:scale-110">
-                    <span class="font-display text-base tracking-tight text-white">GHST MARKET</span>
+                    <span class="hidden font-display text-base tracking-tight text-white sm:block">GHST MARKET</span>
                 </a>
 
                 <nav class="flex items-center gap-4">
