@@ -229,17 +229,75 @@ new #[Layout('layouts.guest')] class extends Component
             <div class="flex-1 px-6 py-6">
 
                 @if ($tab === 'products')
-                    <div class="mb-4 flex items-center justify-between">
-                        <p class="text-sm text-zinc-500">{{ $this->products->total() }} results</p>
+                    {{-- Mobile search + filters --}}
+                    <div class="mb-4 lg:hidden" x-data="{ filtersOpen: false }">
+                        <div class="flex gap-2">
+                            <div class="flex-1">
+                                <flux:input wire:model.live.debounce.300ms="search" placeholder="Search products..." icon="magnifying-glass" clearable />
+                            </div>
 
-                        <div class="flex gap-2 lg:hidden">
-                            <flux:select wire:model.live="category" size="sm" placeholder="Category">
+                            @php $activeFilterCount = collect([$category, $price, $tag])->filter()->count(); @endphp
+                            <button
+                                type="button"
+                                x-on:click="filtersOpen = !filtersOpen"
+                                class="flex shrink-0 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium transition-colors duration-200"
+                                :class="filtersOpen ? 'border-accent/60 bg-accent/10 text-accent' : 'border-zinc-700 text-zinc-300'"
+                            >
+                                <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                                </svg>
+                                Filters
+                                @if ($activeFilterCount > 0)
+                                    <span class="flex size-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">{{ $activeFilterCount }}</span>
+                                @endif
+                            </button>
+                        </div>
+
+                        <div
+                            x-show="filtersOpen"
+                            x-transition:enter="transition duration-150 ease-out"
+                            x-transition:enter-start="-translate-y-1 opacity-0"
+                            x-transition:enter-end="translate-y-0 opacity-100"
+                            style="display: none;"
+                            class="mt-3 space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+                        >
+                            <div>
+                                <p class="mb-2 text-xs font-medium text-zinc-400">Price</p>
+                                <div class="grid grid-cols-3 gap-2">
+                                    @foreach (['' => 'All', 'free' => 'Free', 'paid' => 'Paid'] as $value => $label)
+                                        <button
+                                            wire:click="$set('price', '{{ $value }}')"
+                                            class="rounded-lg border py-1.5 text-sm transition-colors duration-200 {{ $price === $value ? 'border-accent/60 bg-accent/10 font-medium text-accent' : 'border-zinc-700 text-zinc-400' }}"
+                                        >
+                                            {{ $label }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <flux:select wire:model.live="category" label="Category">
                                 <flux:select.option value="">All categories</flux:select.option>
                                 @foreach ($this->categories as $cat)
-                                    <flux:select.option wire:key="{{ $cat->id }}" value="{{ $cat->id }}">{{ $cat->name }}</flux:select.option>
+                                    <flux:select.option wire:key="m-{{ $cat->id }}" value="{{ $cat->id }}">{{ $cat->name }} ({{ $cat->products_count }})</flux:select.option>
                                 @endforeach
                             </flux:select>
+
+                            <flux:select wire:model.live="sort" label="Sort by">
+                                <flux:select.option value="newest">Most recent</flux:select.option>
+                                <flux:select.option value="price_asc">Price: low to high</flux:select.option>
+                                <flux:select.option value="price_desc">Price: high to low</flux:select.option>
+                            </flux:select>
+
+                            @if ($activeFilterCount > 0)
+                                <button wire:click="clearFilters" class="w-full rounded-lg border border-zinc-700 py-2 text-sm text-zinc-400 transition-colors hover:border-accent/40 hover:text-accent">
+                                    Clear all filters
+                                </button>
+                            @endif
                         </div>
+                    </div>
+
+                    <div class="mb-4 flex items-center justify-between">
+                        <p class="text-sm text-zinc-500">{{ $this->products->total() }} results</p>
                     </div>
 
                     @if ($this->activeTag)
@@ -287,6 +345,52 @@ new #[Layout('layouts.guest')] class extends Component
 
                 @else
                     {{-- Creators tab --}}
+                    {{-- Mobile search + filters --}}
+                    <div class="mb-4 lg:hidden" x-data="{ filtersOpen: false }">
+                        <div class="flex gap-2">
+                            <div class="flex-1">
+                                <flux:input wire:model.live.debounce.300ms="search" placeholder="Search creators..." icon="magnifying-glass" clearable />
+                            </div>
+
+                            <button
+                                type="button"
+                                x-on:click="filtersOpen = !filtersOpen"
+                                class="flex shrink-0 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium transition-colors duration-200"
+                                :class="filtersOpen ? 'border-accent/60 bg-accent/10 text-accent' : 'border-zinc-700 text-zinc-300'"
+                            >
+                                <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                                </svg>
+                                Filters
+                                @if ($creatorCategory)
+                                    <span class="flex size-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-foreground">1</span>
+                                @endif
+                            </button>
+                        </div>
+
+                        <div
+                            x-show="filtersOpen"
+                            x-transition:enter="transition duration-150 ease-out"
+                            x-transition:enter-start="-translate-y-1 opacity-0"
+                            x-transition:enter-end="translate-y-0 opacity-100"
+                            style="display: none;"
+                            class="mt-3 space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+                        >
+                            <flux:select wire:model.live="creatorCategory" label="Category">
+                                <flux:select.option value="">All categories</flux:select.option>
+                                @foreach ($this->categories as $cat)
+                                    <flux:select.option wire:key="mc-{{ $cat->id }}" value="{{ $cat->id }}">{{ $cat->name }}</flux:select.option>
+                                @endforeach
+                            </flux:select>
+
+                            <flux:select wire:model.live="creatorSort" label="Sort by">
+                                <flux:select.option value="popular">Most products</flux:select.option>
+                                <flux:select.option value="newest">Newest</flux:select.option>
+                                <flux:select.option value="name">Alphabetically</flux:select.option>
+                            </flux:select>
+                        </div>
+                    </div>
+
                     <div class="mb-6 flex items-center justify-between">
                         <p class="text-sm text-zinc-500">{{ $this->creators->total() }} creators</p>
                         @if ($creatorCategory)
