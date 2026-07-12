@@ -12,7 +12,10 @@
     <body class="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
         <header class="sticky top-0 z-50 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-sm">
             <div class="flex h-16 items-center justify-between px-4 sm:px-6">
-                <x-brand-mark href="{{ route('home') }}" wire:navigate />
+                <a href="{{ route('home') }}" wire:navigate class="group flex items-center gap-2.5">
+                    <img src="{{ asset('images/ghst-icon.png') }}" alt="" class="h-10 w-auto mix-blend-screen transition-transform duration-200 group-hover:scale-110">
+                    <span class="hidden font-display text-base tracking-tight text-white sm:block">GHST MARKET</span>
+                </a>
 
                 <nav class="flex items-center gap-4">
                     <a href="{{ route('products.index') }}" wire:navigate class="text-sm text-zinc-400 transition-colors hover:text-white">
